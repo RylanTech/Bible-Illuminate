@@ -1,8 +1,10 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import morgan from 'morgan';
 const app = express();
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import 'dotenv/config'
+import bibleRoutes from './routes/bibleRoutes'
+
 
 app.use(morgan('dev'));
 app.use(express.json());
@@ -20,19 +22,20 @@ app.use(( req, res, next) => {
 let googleAPIkey = process.env.GOOGLE_API_KEY
 let genAI = new GoogleGenerativeAI(googleAPIkey)
 
-async function run() {
-  const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+app.use("/api/get-chapter/", bibleRoutes)
+
+// async function run() {
+//   const model = genAI.getGenerativeModel({ model: "gemini-pro"});
   
-  let prompt = "give me 3 questions about the story of Gideon in the bible in the format of a array of JSON object with the question value being 'question'"
-  prompt = "What was the sign that God gave Gideon to prove his calling? Could you qoute a part of the verse"
+//   let prompt = "What are the key differences between the KJV and NIV version of Genesis (37-50). Only give me the overall differences"
 
-  const result = await model.generateContent(prompt)
-  const response = await result.response
-  const text = response.text()
-  console.log(text)
-}
+//   const result = await model.generateContent(prompt)
+//   const response = await result.response
+//   const text = response.text()
+//   console.log(text)
+// }
 
-run()
+// run()
 
 // Syncing DB
 // db.sync({ alter:false }).then(() => {
