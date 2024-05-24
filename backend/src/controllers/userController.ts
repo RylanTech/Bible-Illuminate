@@ -1,4 +1,5 @@
 import { comparePasswords } from "../services/auth";
+import { signUserToken } from "../services/authService";
 
 export const loginUser = async (req, res, next) => {
 
