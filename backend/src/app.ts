@@ -4,6 +4,7 @@ const app = express();
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import 'dotenv/config'
 import bibleRoutes from './routes/bibleRoutes'
+import axios from 'axios';
 
 
 app.use(morgan('dev'));
@@ -15,14 +16,30 @@ app.use(express.static('uploads'))
 const cors = require('cors');
 app.use(cors());
 
+
+
+// Your API routes and other middleware
+// Example route
+app.get('/books/:bookId/chapters/:chapterId/:verseId', (req, res) => {
+  // Handle your API logic here
+  // Replace with your actual API logic
+  res.send('API response');
+});
+
+app.use("/api/bible", bibleRoutes)
+
 app.use(( req, res, next) => {
   res.status(404).send("error");
 })
 
-let googleAPIkey = process.env.GOOGLE_API_KEY
-let genAI = new GoogleGenerativeAI(googleAPIkey)
+// async function run() {
+//   let res = await axios.get("https://bible-go-api.rkeplin.com/v1/books/1/chapters/1/1001001?translation=NLT")
+//   console.log(res.data)
+// }
+// run()
 
-app.use("/api/get-chapter/", bibleRoutes)
+// let googleAPIkey = process.env.GOOGLE_API_KEY
+// let genAI = new GoogleGenerativeAI(googleAPIkey)
 
 // async function run() {
 //   const model = genAI.getGenerativeModel({ model: "gemini-pro"});
