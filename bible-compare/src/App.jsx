@@ -1,15 +1,15 @@
-import {BrowserRouter, Route, Routes} from 'react-router-dom'
-import SelectorPage from './pages/SelectorPage'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Homepage from './pages/Homepage'
 
 function App() {
 
   return (
     <>
-     <BrowserRouter>
-     <Routes>
-      <Route path='/' element={<SelectorPage/>}/>
-     </Routes>
-     </BrowserRouter>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<Homepage />} />
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }

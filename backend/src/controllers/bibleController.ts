@@ -23,7 +23,6 @@ export const getVerses: RequestHandler = async (req, res, next) => {
     try {
         const { book, chapter, verseArr, translation } = req.body;
         const verseUrl = `https://bible-go-api.rkeplin.com/v1/books/${book}/chapters/${chapter}/`;
-        console.log(verseArr)
         const bibleData = await Promise.all(
             verseArr.map(async (verse: string) => {
                 const response = await axios.get(`${verseUrl}${verse}?translation=${translation}`);

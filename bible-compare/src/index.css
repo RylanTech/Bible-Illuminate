@@ -32,6 +32,13 @@ body {
   cursor: pointer;
 }
 
+.selection-card {
+  background-color: #203561!important;
+}
+.compare-card {
+  background-color: #203561!important;
+  
+}
 .verse-card {
   background-color: #395ca3!important;
   color: white!important;
@@ -57,5 +64,46 @@ body {
 }
 .selector-inbetween {
   text-align: center;
-  font-size: 25px!important;
+  font-size: 26px!important;
+}
+.full-passage {
+  text-align: center;
+  color: white!important;
+  font-size: 26px;
+  margin: 15px;
+}
+.ai-res {
+  color: white!important;
+}
+.powered-by {
+  font-size: 26px;
+  text-align: center;
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+
+}
+.gemini-word {
+  background: linear-gradient(to right, #4285f4, 0, #9b72cb 9%, #4285f4 44%, #d96570 20%, #d96570 24%, #9b72cb 35%,  #9b72cb 50%, #d96570 56%);
+
+  /* background: -webkit-linear-gradient(16deg, #4285f4, 0, #9b72cb 9%, #d96570 20%, #d96570 24%, #9b72cb 35%, #4285f4 44%, #9b72cb 50%, #d96570 56%, #131314 75%, #131314 100%) !important; */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 34px;
+}
+
+.compare-button {
+  background-color: #203561!important;
+  border: 2px solid white!important;
+}
+.compare-button:hover {
+  background: linear-gradient(to right, #4285f4, 3%, #9b72cb 9%, #4285f4 15%, #d96570 20%, #d96570 24%, #9b72cb 35%,  #9b72cb 50%, #d96570 56%)!important;
+  /* -webkit-background-clip: text; */
+}
+
+@media (max-width: 768px) {
+  .compare-card {
+    margin-top: 15px;
+    
+  }
 }

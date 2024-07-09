@@ -5,6 +5,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import 'dotenv/config'
 import bibleRoutes from './routes/bibleRoutes'
 import axios from 'axios';
+import aiRoutes from './routes/aiRoutes'
 
 
 app.use(morgan('dev'));
@@ -27,16 +28,11 @@ app.get('/books/:bookId/chapters/:chapterId/:verseId', (req, res) => {
 });
 
 app.use("/api/bible", bibleRoutes)
+app.use("/api/gemini", aiRoutes)
 
 app.use(( req, res, next) => {
   res.status(404).send("error");
 })
-
-// async function run() {
-//   let res = await axios.get("https://bible-go-api.rkeplin.com/v1/books/1/chapters/1/1001001?translation=NLT")
-//   console.log(res.data)
-// }
-// run()
 
 // let googleAPIkey = process.env.GOOGLE_API_KEY
 // let genAI = new GoogleGenerativeAI(googleAPIkey)
