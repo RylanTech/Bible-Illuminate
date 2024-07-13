@@ -100,6 +100,9 @@ body {
   background: linear-gradient(to right, #4285f4, 3%, #9b72cb 9%, #4285f4 15%, #d96570 20%, #d96570 24%, #9b72cb 35%,  #9b72cb 50%, #d96570 56%)!important;
   /* -webkit-background-clip: text; */
 }
+.verse-housing {
+  text-align: left;
+}
 
 @media (max-width: 768px) {
   .compare-card {

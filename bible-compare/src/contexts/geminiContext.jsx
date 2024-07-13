@@ -5,7 +5,7 @@ export const GeminiContext = createContext()
 
 export const GeminiProvider = (props) => {
 
-    const baseUrl = 'http://localhost:3001/api/gemini/'
+    const baseUrl = 'http://192.168.1.17:3001/api/gemini/'
 
     function compareOneVerse(translationOne, translationTwo, book, chapter, verse) {
 

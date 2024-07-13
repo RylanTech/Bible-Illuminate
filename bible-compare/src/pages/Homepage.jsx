@@ -149,7 +149,7 @@ function Homepage() {
         let resTwo = await getVerse(selectedCompareTranslation, bookObject.id, 1, translateSelectedVerse(1));
         setCompareVerse(resTwo.verse);
     }
-    
+
 
     async function handleSetSelectedTranslation(translation) {
         setSelectedTranslation(translation);
@@ -372,22 +372,24 @@ function Homepage() {
                                     <Card
                                         className='verse-card'>
                                         <Card.Body>
-                                            {verse ? (
-                                                <>
-                                                    {verse}
-                                                </>
-                                            ) : (
-                                                <>
-                                                    Selected a verse to compare
-                                                </>
-                                            )}
+                                            <div className='verse-housing'>
+                                                {verse ? (
+                                                    <>
+                                                        {verse}
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        Selected a verse to compare
+                                                    </>
+                                                )}
+                                            </div>
                                         </Card.Body>
                                     </Card>
                                 </Card.Body>
                             </Card>
                         </Row>
                         <div className='full-passage'>
-                            {selectedBook.name} - Chapter {selectedChapter}, verse {isOneVerse()}
+                            {/* {selectedBook.name} - Chapter {selectedChapter}, verse {isOneVerse()} */}
                         </div>
                         <Row>
                             <Card
@@ -414,15 +416,18 @@ function Homepage() {
                                     <Card
                                         className='verse-card'>
                                         <Card.Body>
-                                            {compareVerse ? (
-                                                <>
-                                                    {compareVerse}
-                                                </>
-                                            ) : (
-                                                <>
-                                                    Selected a verse to compare
-                                                </>
-                                            )}
+                                            <div className='verse-housing'>
+
+                                                {compareVerse ? (
+                                                    <>
+                                                        {compareVerse}
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        Selected a verse to compare
+                                                    </>
+                                                )}
+                                            </div>
                                         </Card.Body>
                                     </Card>
                                 </Card.Body>
@@ -455,7 +460,7 @@ function Homepage() {
                             </Card.Body>
                         </Card>
                     </div>
-                </Row>
+                </Row >
                 <br />
                 <br />
                 <br />
@@ -472,7 +477,7 @@ function Homepage() {
                         </div>
                     </div>
                 </Row>
-            </Container>
+            </Container >
         </>
     )
 }

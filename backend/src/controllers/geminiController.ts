@@ -13,7 +13,7 @@ export const compareOne: RequestHandler = async (req, res, next) => {
         let verse: string = req.params.verse
 
         const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-        let prompt = `What are the key differences between the ${translationOne} and ${translationTwo} version of ${book} chapter ${chapter} verse ${verse} in the christian Bible. Do not quote the verses`
+        let prompt = `What are the differences in the meaning between the ${translationOne} and ${translationTwo} version of ${book} chapter ${chapter} verse ${verse} in the christian Bible. Do not quote the verses, and please keep it short or medium length.`
         
         const result = await model.generateContent(prompt)
         const response = await result.response
@@ -35,7 +35,7 @@ export const compareMultiple: RequestHandler = async (req, res, next) => {
         let verseTwo: string = req.params.verseTwo
 
         const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-        let prompt = `What are the key differences between the ${translationOne} and ${translationTwo} version of ${book} chapter ${chapter} verses ${verseOne} through ${verseTwo} in the christian Bible. Do not quote the verses`
+        let prompt = `What are the differences in the meaning between the ${translationOne} and ${translationTwo} version of ${book} chapter ${chapter} verses ${verseOne} through ${verseTwo} in the christian Bible. Do not quote the verses, and please keep it short or medium length.`
         
         const result = await model.generateContent(prompt)
         const response = await result.response
