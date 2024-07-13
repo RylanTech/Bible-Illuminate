@@ -1,0 +1,34 @@
+.selector-bar {
+    /* background-color: #2C4A86; */
+    border-radius: 15px;
+    margin: 15px;
+}
+
+.item-selector-button {
+    margin: 2px;
+    padding: 4px;
+    border-radius: 5px;
+    background-color: #192641;
+    border: 1px solid #192641;
+}
+
+.item-selector-button:hover {
+    border: 1px solid white;
+}
+.item-selector-button-selected {
+    border: 1px solid white;
+}
+
+.custom-popover {
+    /* max-height: 550px; */
+    /* Adjust the max-height as needed */
+    overflow-y: auto;
+}
+
+.selector-button {
+    background-color: #192641;
+    border-radius: 15px;
+}
+.search-word {
+    margin-left: 5px;
+}

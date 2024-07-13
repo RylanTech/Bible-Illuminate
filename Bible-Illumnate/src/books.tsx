@@ -1347,21 +1347,6 @@ export const books = [
         ]
     },
     {
-        "id": 39,
-        "name": "Malachi",
-        "testament": "OT",
-        "genre": {
-            "id": 4,
-            "name": "Prophets"
-        },
-        "chapters": [
-            { "number": 1, "verses": 14 },
-            { "number": 2, "verses": 17 },
-            { "number": 3, "verses": 18 },
-            { "number": 4, "verses": 6 }
-        ]
-    },
-    {
         "id": 40,
         "name": "Matthew",
         "testament": "NT",
