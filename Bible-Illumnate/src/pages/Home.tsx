@@ -1,15 +1,21 @@
-import { IonButton, IonButtons, IonCol, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonModal, IonPage, IonPopover, IonRow, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonModal, IonPage, IonPopover, IonRow, IonTitle, IonToolbar } from '@ionic/react';
 import './Home.css';
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { books } from '../books';
-import { search } from 'ionicons/icons'
+import { clipboardSharp, search } from 'ionicons/icons'
+import { VerseContext, callingManyVerseBody, callingOneVerseBody } from '../contexts/verseContext';
 
 const Home: React.FC = () => {
+  const [versesOne, setVersesOne] = useState<string | undefined>()
+  const [versesTwo, setVersesTwo] = useState<string | undefined>()
+
   const [selectedBook, setSelectedBook] = useState<any | undefined>()
   const [selectedBookName, setSelectedBookName] = useState<string | undefined>()
   const [selectedChapter, setSelectedChapter] = useState<number | undefined>()
   const [selectedVerse, setSelectedVerse] = useState<number | undefined>()
   const [selectedEndingVerse, setSelectedEndingVerse] = useState<number | undefined>()
+  const [selectedTranslation, setSelectedTranslation] = useState<String>("NLT")
+  const [selectedCompareTranslation, setSelectedCompareTranslation] = useState<String>("KJV")
   const [apiCallURLs, setApiCallURLs] = useState<Array<string> | undefined>()
   const [apiCallCompareURLs, setApiCallCompareURLs] = useState<Array<string> | undefined>()
 
@@ -20,6 +26,10 @@ const Home: React.FC = () => {
   const [chapterPopoverOpen, setChapterPopoverOpen] = useState(false);
   const [versePopoverOpen, setVersePopoverOpen] = useState(false);
   const [endingVersePopoverOpen, setEndingVersePopoverOpen] = useState(false);
+  const [translationPopoverOpen, setTranslationPopoverOpen] = useState(false);
+  const [translationComparePopoverOpen, setTranslationComparePopoverOpen] = useState(false)
+
+  const { getOneVerse, getManyVerses } = useContext(VerseContext)
 
   function confirm() {
     callVerses()
@@ -52,20 +62,66 @@ const Home: React.FC = () => {
     return verseId
   }
 
-  function callVerses() {
+  async function callVerses() {
     let verses = getNumbersInRange(selectedVerse, selectedEndingVerse)
     if (verses === null) {
       return
     }
 
-    if (verses.length === 1) {
 
+    if (verses.length === 1) {
+      if (!selectedVerse) {
+        return
+      } else if (!selectedChapter) {
+        return
+      }
+      let verseId = translateSelectedVerse(selectedVerse)
+      if (!verseId) {
+        return
+      }
+
+      let data: callingOneVerseBody = {
+        selectedTranslation: "NLT",
+        selectedBook: selectedBook.id,
+        selectedChapter: selectedChapter.toString(),
+        verseId: verseId
+      }
+      let res = await getOneVerse(data)
+      console.log(res)
+      // setVersesOne(res)
     } else {
       let verseArr: any = [];
       verses.forEach(verse => {
         verseArr.push(translateSelectedVerse(verse));
       });
-      console.log(verseArr)
+
+      if (!selectedChapter) {
+        return
+      }
+
+      // Function call in your component or function
+      let data: callingManyVerseBody = {
+        selectedTranslation: "NLT",
+        selectedBook: selectedBook.id,
+        selectedChapter: selectedChapter.toString(),
+        verseArr: verseArr
+      }
+
+      try {
+        let res = await getManyVerses(data);
+        console.log('Response:', res); // Log the entire response
+
+        if (res) {
+          let returnedVerse = res.map(verse => `${verse.verseId} ${verse.verse} `).join('');
+          console.log('Returned Verse:', returnedVerse);
+          setVersesOne(returnedVerse)
+        } else {
+          console.error('Invalid response structure:', res);
+        }
+      } catch (error) {
+        console.error('Error fetching verses:', error);
+      }
+
     }
   }
 
@@ -89,6 +145,16 @@ const Home: React.FC = () => {
     return result;
   }
 
+  const handleTranslationClick = (translation: string) => {
+    setSelectedTranslation(translation);
+    setTranslationPopoverOpen(false);
+  };
+
+  const handleTranslationCompareClick = (translation: string) => {
+    setSelectedCompareTranslation(translation);
+    setTranslationComparePopoverOpen(false);
+  };
+
   const handleBookClick = (book: string) => {
     handleSetSelectedBook(book);
     setBookPopoverOpen(false);
@@ -101,6 +167,7 @@ const Home: React.FC = () => {
 
   const handleVerseClick = (num: number) => {
     handleSetSelectedVerse(num);
+    handleSetSelectedEndingVerse(num)
     setVersePopoverOpen(false);
   };
 
@@ -127,24 +194,6 @@ const Home: React.FC = () => {
 
   async function handleSetSelectedEndingVerse(num: number) {
     setSelectedEndingVerse(num);
-    // let verses = getNumbersInRange(selectedVerse, num);
-    // if (verses.length === 1) {
-    //     let res = await getVerse(selectedTranslation, selectedBook.id, selectedChapter, translateSelectedVerse(selectedVerse));
-    //     setVerse(res.verse);
-    //     let resTwo = await getVerse(selectedCompareTranslation, selectedBook.id, selectedChapter, translateSelectedVerse(selectedVerse));
-    //     setCompareVerse(resTwo.verse);
-    // } else {
-    //     let verseArr = [];
-    //     verses.forEach(verse => {
-    //         verseArr.push(translateSelectedVerse(verse));
-    //     });
-    //     let res = await getVerses(selectedTranslation, selectedBook.id, selectedChapter, verseArr);
-    //     let resTwo = await getVerses(selectedCompareTranslation, selectedBook.id, selectedChapter, verseArr);
-    //     let returnedVerse = res.map(verse => `${verse.verseId} ${verse.verse} `).join('');
-    //     setVerse(returnedVerse);
-    //     let returnedCompareVerse = resTwo.map(verse => `${verse.verseId} ${verse.verse} `).join('');
-    //     setCompareVerse(returnedCompareVerse);
-    // }
   }
 
   const numberOfChapters = () => {
@@ -250,6 +299,14 @@ const Home: React.FC = () => {
     }
   }
 
+  function multiVerse() {
+    if (selectedVerse === selectedEndingVerse) {
+      return selectedVerse
+    } else {
+      return `${selectedVerse} - ${selectedEndingVerse}`
+    }
+  }
+
   let bookArr: string[] = []
   books.map((book) => {
     bookArr.push(book.name)
@@ -264,7 +321,15 @@ const Home: React.FC = () => {
               <IonRow>
                 <IonIcon icon={search}></IonIcon>
                 <div className='search-word'>
-                  Search Verses
+                  {versesOne ? (
+                    <>
+                    {selectedBook.name} {selectedChapter}, {multiVerse()}
+                    </>
+                  ) : (
+                    <>
+                    Search Verses
+                    </>
+                  )}
                 </div>
               </IonRow>
             </IonButton>
@@ -272,6 +337,75 @@ const Home: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
+        {/* Verse Card 1 */}
+        {versesOne ? (
+          <>
+            <IonCard
+              className='verse-card'>
+              <IonCardContent>
+
+                <IonButton
+                  fill='clear'
+                  className='selector-translation-button'
+                  id="select-translation"
+                  expand="block"
+                  onClick={() => setTranslationPopoverOpen(true)}
+                >
+                  {selectedTranslation}
+                </IonButton>
+                <IonPopover
+                  isOpen={translationPopoverOpen}
+                  onDidDismiss={() => setTranslationPopoverOpen(false)}
+                  trigger="select-translation"
+                  size="auto"
+                  className="custom-popover"
+                >
+                  <div key="NLT" className='item-selector-button' onClick={() => handleTranslationClick("NLT")}>"NLT"</div>
+                  <div key="NLT" className='item-selector-button' onClick={() => handleTranslationClick("KJV")}>"KJV"</div>
+                  <div key="NLT" className='item-selector-button' onClick={() => handleTranslationClick("ESV")}>"ESV"</div>
+                  <div key="NLT" className='item-selector-button' onClick={() => handleTranslationClick("NIV")}>"NIV"</div>
+                  <div key="NLT" className='item-selector-button' onClick={() => handleTranslationClick("ASV")}>"ASV"</div>
+                </IonPopover>
+
+                <IonCard className='inner-verse-card'>
+                  <IonCardContent>
+                    {versesOne}
+                  </IonCardContent>
+                </IonCard>
+              </IonCardContent>
+            </IonCard>
+
+            <IonCard className='compare-to'>
+              <IonCardContent>
+              <div className='compare-to-text'>
+                Compare to
+              </div>
+              </IonCardContent>
+            </IonCard>
+          </>
+        ) : (
+          <>
+            <IonCard
+              className='verse-card'>
+              <IonCardContent>
+
+                <IonButton
+                  fill='clear'
+                  className='selector-translation-button'
+                  expand="block"
+                >
+                  Bible Illumnate
+                </IonButton>
+                <IonCard className='inner-verse-card'>
+                  <IonCardContent>
+                    Search for a verse to compare! Click the search bar above.
+                  </IonCardContent>
+                </IonCard>
+              </IonCardContent>
+            </IonCard>
+          </>
+        )}
+        {/* Selector */}
         <IonModal ref={modal} trigger="open-modal">
           <IonHeader>
             <IonToolbar>
@@ -347,6 +481,7 @@ const Home: React.FC = () => {
                 <IonPopover
                   isOpen={chapterPopoverOpen}
                   onDidDismiss={() => setChapterPopoverOpen(false)}
+                  trigger="select-chapter"
                   size="auto"
                   className="custom-popover"
                 >

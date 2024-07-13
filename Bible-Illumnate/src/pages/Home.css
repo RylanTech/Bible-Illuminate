@@ -32,3 +32,29 @@
 .search-word {
     margin-left: 5px;
 }
+
+.verse-card {
+    background-color: #192641;
+}
+
+.inner-verse-card {
+    margin: 5px 0px 5px 0px;
+    background-color: #141a27;
+    border: 1px solid #7f98cc;
+}
+
+.selector-translation-button {
+    margin: 1px;
+    font-size: 18px;
+    border: 1px solid #7f98cc;
+    border-radius: 3px;
+    background-color: #141a27;
+}
+
+.compare-to {
+    background-color: #192641;
+}
+.compare-to-text {
+    text-align: center;
+    font-size: 18px;
+  }
