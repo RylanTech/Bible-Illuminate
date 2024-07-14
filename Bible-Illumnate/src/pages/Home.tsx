@@ -15,7 +15,7 @@ const Home: React.FC = () => {
   const [selectedVerse, setSelectedVerse] = useState<number | undefined>()
   const [selectedEndingVerse, setSelectedEndingVerse] = useState<number | undefined>()
   const [selectedTranslation, setSelectedTranslation] = useState<String>("NLT")
-  const [selectedCompareTranslation, setSelectedCompareTranslation] = useState<String>("KJV")
+  const [selectedCompareTranslation, setSelectedCompareTranslation] = useState<String | undefined>()
   const [apiCallURLs, setApiCallURLs] = useState<Array<string> | undefined>()
   const [apiCallCompareURLs, setApiCallCompareURLs] = useState<Array<string> | undefined>()
 
@@ -28,6 +28,8 @@ const Home: React.FC = () => {
   const [endingVersePopoverOpen, setEndingVersePopoverOpen] = useState(false);
   const [translationPopoverOpen, setTranslationPopoverOpen] = useState(false);
   const [translationComparePopoverOpen, setTranslationComparePopoverOpen] = useState(false)
+
+  const [readyForCompare, setReadyForCompare] = useState(false)
 
   const { getOneVerse, getManyVerses } = useContext(VerseContext)
 
@@ -62,12 +64,122 @@ const Home: React.FC = () => {
     return verseId
   }
 
+  async function translationRefresh(forWhat: number, translationOne: string, translationTwo: string) {
+    if (forWhat === 1) {
+      let verses = getNumbersInRange(selectedVerse, selectedEndingVerse)
+      if (verses === null) {
+        return
+      }
+
+      if (verses.length === 1) {
+        if (!selectedVerse) {
+          return
+        }
+        if (!selectedChapter) {
+          return
+        }
+        let verseId = translateSelectedVerse(selectedVerse)
+        if (!verseId) {
+          return
+        }
+
+        let data: callingOneVerseBody = {
+          selectedTranslation: translationOne,
+          selectedBook: selectedBook.id,
+          selectedChapter: selectedChapter.toString(),
+          verseId: verseId
+        }
+        let res = await getOneVerse(data)
+        setVersesOne(res.verse)
+      } else {
+        let verseArr: any = [];
+        verses.forEach(verse => {
+          verseArr.push(translateSelectedVerse(verse));
+        });
+
+        if (!selectedChapter) {
+          return
+        }
+
+        let data: callingManyVerseBody = {
+          selectedTranslation: translationOne,
+          selectedBook: selectedBook.id,
+          selectedChapter: selectedChapter.toString(),
+          verseArr: verseArr
+        }
+
+        try {
+          let res = await getManyVerses(data);
+
+          if (res) {
+            let returnedVerse = res.map(verse => `${verse.verseId} ${verse.verse} `).join('');
+            setVersesOne(returnedVerse)
+          } else {
+            console.error('Invalid response structure:', res);
+          }
+        } catch (error) {
+          console.error('Error fetching verses:', error);
+        }
+
+      }
+    } else if (forWhat === 2) {
+      let verses = getNumbersInRange(selectedVerse, selectedEndingVerse)
+      if (verses === null) {
+        return
+      }
+      if (verses.length === 1) {
+        if (!selectedVerse) {
+          return
+        }
+        if (!selectedChapter) {
+          return
+        }
+        let verseId = translateSelectedVerse(selectedVerse)
+        if (!verseId) {
+          return
+        }
+        let data: callingOneVerseBody = {
+          selectedTranslation: translationTwo,
+          selectedBook: selectedBook.id,
+          selectedChapter: selectedChapter.toString(),
+          verseId: verseId
+        }
+        let res = await getOneVerse(data)
+        setVersesTwo(res.verse)
+      } else {
+        let verseArr: any = [];
+        verses.forEach(verse => {
+          verseArr.push(translateSelectedVerse(verse));
+        });
+        if (!selectedChapter) {
+          return
+        }
+        let data: callingManyVerseBody = {
+          selectedTranslation: translationTwo,
+          selectedBook: selectedBook.id,
+          selectedChapter: selectedChapter.toString(),
+          verseArr: verseArr
+        }
+        try {
+          let res = await getManyVerses(data);
+          if (res) {
+            let returnedVerse = res.map(verse => `${verse.verseId} ${verse.verse} `).join('');
+            setVersesTwo(returnedVerse)
+          } else {
+            console.error('Invalid response structure:', res);
+          }
+        } catch (error) {
+          console.error('Error fetching verses:', error);
+        }
+      }
+    }
+  }
+
   async function callVerses() {
     let verses = getNumbersInRange(selectedVerse, selectedEndingVerse)
     if (verses === null) {
       return
     }
-
 
     if (verses.length === 1) {
       if (!selectedVerse) {
@@ -81,14 +193,19 @@ const Home: React.FC = () => {
       }
 
       let data: callingOneVerseBody = {
-        selectedTranslation: "NLT",
+        selectedTranslation: selectedTranslation.toString(),
         selectedBook: selectedBook.id,
         selectedChapter: selectedChapter.toString(),
         verseId: verseId
       }
+
+      if (readyForCompare && selectedCompareTranslation) {
+        translationRefresh(2, selectedTranslation.toString(), selectedCompareTranslation.toString())
+      }
+
       let res = await getOneVerse(data)
-      console.log(res)
-      // setVersesOne(res)
+      setReadyForCompare(true)
+      setVersesOne(res.verse)
     } else {
       let verseArr: any = [];
       verses.forEach(verse => {
@@ -99,27 +216,25 @@ const Home: React.FC = () => {
         return
       }
 
-      // Function call in your component or function
       let data: callingManyVerseBody = {
-        selectedTranslation: "NLT",
+        selectedTranslation: selectedTranslation.toString(),
         selectedBook: selectedBook.id,
         selectedChapter: selectedChapter.toString(),
         verseArr: verseArr
       }
 
-      try {
-        let res = await getManyVerses(data);
-        console.log('Response:', res); // Log the entire response
+      if (readyForCompare && selectedCompareTranslation) {
+        translationRefresh(2, selectedTranslation.toString(), selectedCompareTranslation.toString())
+      }
 
-        if (res) {
-          let returnedVerse = res.map(verse => `${verse.verseId} ${verse.verse} `).join('');
-          console.log('Returned Verse:', returnedVerse);
-          setVersesOne(returnedVerse)
-        } else {
-          console.error('Invalid response structure:', res);
-        }
-      } catch (error) {
-        console.error('Error fetching verses:', error);
+      let res = await getManyVerses(data);
+
+      if (res) {
+        let returnedVerse = res.map(verse => `${verse.verseId} ${verse.verse} `).join('');
+        setReadyForCompare(true)
+        setVersesOne(returnedVerse)
+      } else {
+        console.error('Invalid response structure:', res);
       }
 
     }
@@ -148,11 +263,15 @@ const Home: React.FC = () => {
   const handleTranslationClick = (translation: string) => {
     setSelectedTranslation(translation);
     setTranslationPopoverOpen(false);
+
+    translationRefresh(1, translation, "NLT")
   };
 
   const handleTranslationCompareClick = (translation: string) => {
     setSelectedCompareTranslation(translation);
     setTranslationComparePopoverOpen(false);
+
+    translationRefresh(2, selectedTranslation.toString(), translation)
   };
 
   const handleBookClick = (book: string) => {
@@ -323,11 +442,11 @@ const Home: React.FC = () => {
                 <div className='search-word'>
                   {versesOne ? (
                     <>
-                    {selectedBook.name} {selectedChapter}, {multiVerse()}
+                      {selectedBook.name} {selectedChapter}, {multiVerse()}
                     </>
                   ) : (
                     <>
-                    Search Verses
+                      Search Verses
                     </>
                   )}
                 </div>
@@ -360,11 +479,11 @@ const Home: React.FC = () => {
                   size="auto"
                   className="custom-popover"
                 >
-                  <div key="NLT" className='item-selector-button' onClick={() => handleTranslationClick("NLT")}>"NLT"</div>
-                  <div key="NLT" className='item-selector-button' onClick={() => handleTranslationClick("KJV")}>"KJV"</div>
-                  <div key="NLT" className='item-selector-button' onClick={() => handleTranslationClick("ESV")}>"ESV"</div>
-                  <div key="NLT" className='item-selector-button' onClick={() => handleTranslationClick("NIV")}>"NIV"</div>
-                  <div key="NLT" className='item-selector-button' onClick={() => handleTranslationClick("ASV")}>"ASV"</div>
+                  <div key="NLT1" className='item-selector-button' onClick={() => handleTranslationClick("NLT")}>"NLT"</div>
+                  <div key="KJV1" className='item-selector-button' onClick={() => handleTranslationClick("KJV")}>"KJV"</div>
+                  <div key="ESV1" className='item-selector-button' onClick={() => handleTranslationClick("ESV")}>"ESV"</div>
+                  <div key="NIV1" className='item-selector-button' onClick={() => handleTranslationClick("NIV")}>"NIV"</div>
+                  <div key="ASV1" className='item-selector-button' onClick={() => handleTranslationClick("ASV")}>"ASV"</div>
                 </IonPopover>
 
                 <IonCard className='inner-verse-card'>
@@ -377,11 +496,68 @@ const Home: React.FC = () => {
 
             <IonCard className='compare-to'>
               <IonCardContent>
-              <div className='compare-to-text'>
-                Compare to
-              </div>
+                <div className='compare-to-text'>
+                  Compare to
+                </div>
               </IonCardContent>
             </IonCard>
+            {readyForCompare ? (
+              <>
+                <IonCard
+                  className='verse-card'>
+                  <IonCardContent>
+
+                    <IonButton
+                      fill='clear'
+                      className='selector-translation-button'
+                      id="select-compare-translation"
+                      expand="block"
+                      onClick={() => setTranslationComparePopoverOpen(true)}
+                    >
+                      {selectedCompareTranslation ? (
+                        <>
+                          {selectedCompareTranslation}
+                        </>
+                      ) : (
+                        <>
+                          Select Translation
+                        </>
+                      )}
+                    </IonButton>
+                    <IonPopover
+                      isOpen={translationComparePopoverOpen}
+                      onDidDismiss={() => setTranslationComparePopoverOpen(false)}
+                      trigger="select-compare-translation"
+                      size="auto"
+                      className="custom-popover"
+                    >
+                      <div key="NLT2" className='item-selector-button' onClick={() => handleTranslationCompareClick("NLT")}>"NLT"</div>
+                      <div key="KJV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("KJV")}>"KJV"</div>
+                      <div key="ESV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("ESV")}>"ESV"</div>
+                      <div key="NIV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("NIV")}>"NIV"</div>
+                      <div key="ASV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("ASV")}>"ASV"</div>
+                    </IonPopover>
+
+                    <IonCard className='inner-verse-card'>
+                      <IonCardContent>
+                        {versesTwo ? (
+                          <>
+                            {versesTwo}
+                          </>
+                        ) : (
+                          <>
+                            Click the button above to select a translation to compare to!
+                          </>
+                        )}
+                      </IonCardContent>
+                    </IonCard>
+                  </IonCardContent>
+                </IonCard>
+              </>
+            ) : (
+              <>
+              </>
+            )}
           </>
         ) : (
           <>
@@ -403,6 +579,21 @@ const Home: React.FC = () => {
                 </IonCard>
               </IonCardContent>
             </IonCard>
+          </>
+        )}
+        {versesTwo ? (
+          <>
+            <IonCard className='verse-card'>
+              <IonCardContent>
+                <IonButton fill='clear' className='col-12 compare-button' id="open-modal" expand="block"
+                  onClick={() => console.log("compare")}>
+                  Compare
+                </IonButton>
+              </IonCardContent>
+            </IonCard>
+          </>
+        ) : (
+          <>
           </>
         )}
         {/* Selector */}

@@ -15,6 +15,7 @@
 .item-selector-button:hover {
     border: 1px solid white;
 }
+
 .item-selector-button-selected {
     border: 1px solid white;
 }
@@ -29,6 +30,7 @@
     background-color: #192641;
     border-radius: 15px;
 }
+
 .search-word {
     margin-left: 5px;
 }
@@ -54,7 +56,29 @@
 .compare-to {
     background-color: #192641;
 }
+
 .compare-to-text {
     text-align: center;
     font-size: 18px;
-  }
+}
+
+.gemini-word {
+    background: linear-gradient(to right, #4285f4, 0, #9b72cb 9%, #4285f4 44%, #d96570 20%, #d96570 24%, #9b72cb 35%, #9b72cb 50%, #d96570 56%);
+
+    /* background: -webkit-linear-gradient(16deg, #4285f4, 0, #9b72cb 9%, #d96570 20%, #d96570 24%, #9b72cb 35%, #4285f4 44%, #9b72cb 50%, #d96570 56%, #131314 75%, #131314 100%) !important; */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 34px;
+}
+
+.compare-button {
+    background-color: #141a27 !important;
+    border: 2px solid white !important;
+    border-radius: 4px;
+    color: white;
+}
+
+.compare-button:hover {
+    background: linear-gradient(to right, #4285f4, 3%, #9b72cb 9%, #4285f4 15%, #d96570 20%, #d96570 24%, #9b72cb 35%, #9b72cb 50%, #d96570 56%) !important;
+    /* -webkit-background-clip: text; */
+}

@@ -5,7 +5,7 @@ import { RequestHandler } from "express"
 export const getVerse: RequestHandler = async (req, res, next) => {
     //https://bible-go-api.rkeplin.com/v1/books/${book}/chapters/${chapter}/${verse}?translation=${translation}
     try {
-        let { book, chapter, verse, translation } = req.body
+        let { book, chapter, verse, translation } = req.body;
         let verseUrl = `https://bible-go-api.rkeplin.com/v1/books/${book}/chapters/${chapter}/${verse}?translation=${translation}`
         let bibleData: any = await axios.get(verseUrl)
         if (bibleData) {
