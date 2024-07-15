@@ -1,3 +1,9 @@
+* {
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
 .selector-bar {
     /* background-color: #2C4A86; */
     border-radius: 15px;
@@ -36,7 +42,7 @@
 }
 
 .verse-card {
-    background-color: #192641;
+    background-color: var(--verse-card-color);
 }
 
 .inner-verse-card {
@@ -64,11 +70,17 @@
 
 .gemini-word {
     background: linear-gradient(to right, #4285f4, 0, #9b72cb 9%, #4285f4 44%, #d96570 20%, #d96570 24%, #9b72cb 35%, #9b72cb 50%, #d96570 56%);
-
     /* background: -webkit-linear-gradient(16deg, #4285f4, 0, #9b72cb 9%, #d96570 20%, #d96570 24%, #9b72cb 35%, #4285f4 44%, #9b72cb 50%, #d96570 56%, #131314 75%, #131314 100%) !important; */
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-size: 34px;
+}
+
+.gemini-footprint {
+    font-size: 24px;
+    margin-left: 10px;
+    bottom: 0;
+    position: fixed;
+    margin-bottom: 5px;
 }
 
 .compare-button {
@@ -78,7 +90,30 @@
     color: white;
 }
 
-.compare-button:hover {
-    background: linear-gradient(to right, #4285f4, 3%, #9b72cb 9%, #4285f4 15%, #d96570 20%, #d96570 24%, #9b72cb 35%, #9b72cb 50%, #d96570 56%) !important;
-    /* -webkit-background-clip: text; */
+.footer {
+    position: fixed;
+    bottom: 0;
+    right: 0 !important;
+    margin: 10px;
+    z-index: 3;
+}
+
+.compare-button {
+    background: linear-gradient(to right, #9b72cb, #d96570, #4285f4) !important;
+}
+
+.main-res {
+    background: linear-gradient(to right, #131825, #141c2e, #141c2e, #141c2e, #141c2e, #121b30, #17223b, #1a2748)!important;
+    border-radius: 15px;
+    border: 1px solid #4285f4; 
+}
+.cross-reference {
+    background: linear-gradient(to right, #141c2e, #141c2e, #141c2e, #141c2e, #141c2e, #121b30, #1a2745, #223461)!important;
+    border-radius: 20px;
+    border: 1px solid #4285f4; 
+}
+.fun-fact {
+    background: linear-gradient(to right, #0a110a, #0a110a, #0a110a, #0a110a)!important;
+    border-radius: 20px;
+    border: 1px solid #6cb863; 
 }

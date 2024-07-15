@@ -1,2 +1,11 @@
 /* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */
+:root {
+    --verse-card-color: #4660bc;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    :root {
+        --verse-card-color: #141c36;
+    }
+  }

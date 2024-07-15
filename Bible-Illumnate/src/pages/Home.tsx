@@ -4,8 +4,16 @@ import { useContext, useRef, useState } from 'react';
 import { books } from '../books';
 import { clipboardSharp, search } from 'ionicons/icons'
 import { VerseContext, callingManyVerseBody, callingOneVerseBody } from '../contexts/verseContext';
+import { useGemini } from '../contexts/geminiContext';
+import TextDisplay from '../components/textDisplay';
 
 const Home: React.FC = () => {
+  const [geminiLoading, setGeminiLoading] = useState<boolean>(false);
+  const [geminiResponse, setGeminiResponse] = useState<String>();
+  const [geminiMain, setGeminiMain] = useState<String | undefined>();
+  const [geminiFunFact, setGeminiFunFact] = useState<String | undefined>();
+  const [geminiCrossRef, setGeminiCrossRef] = useState<String | undefined>();
+
   const [versesOne, setVersesOne] = useState<string | undefined>()
   const [versesTwo, setVersesTwo] = useState<string | undefined>()
 
@@ -16,11 +24,10 @@ const Home: React.FC = () => {
   const [selectedEndingVerse, setSelectedEndingVerse] = useState<number | undefined>()
   const [selectedTranslation, setSelectedTranslation] = useState<String>("NLT")
   const [selectedCompareTranslation, setSelectedCompareTranslation] = useState<String | undefined>()
-  const [apiCallURLs, setApiCallURLs] = useState<Array<string> | undefined>()
-  const [apiCallCompareURLs, setApiCallCompareURLs] = useState<Array<string> | undefined>()
 
   const modal = useRef<HTMLIonModalElement>(null);
   const input = useRef<HTMLIonInputElement>(null);
+  const [isModalTwoOpen, setIsModalTwoOpen] = useState(false);
 
   const [bookPopoverOpen, setBookPopoverOpen] = useState(false);
   const [chapterPopoverOpen, setChapterPopoverOpen] = useState(false);
@@ -31,7 +38,42 @@ const Home: React.FC = () => {
 
   const [readyForCompare, setReadyForCompare] = useState(false)
 
-  const { getOneVerse, getManyVerses } = useContext(VerseContext)
+  const { getOneVerse, getManyVerses } = useContext(VerseContext);
+  const { compareOneVerse, compareManyVerses } = useGemini();
+
+  async function compareVerses() {
+    if (!selectedCompareTranslation) {
+      return
+    }
+    if (!selectedChapter) {
+      return
+    }
+    if (!selectedVerse) {
+      return
+    }
+    if (!selectedEndingVerse) {
+      return
+    }
+    if (selectedVerse === selectedEndingVerse) {
+      let res = await compareOneVerse(selectedTranslation.toString(), selectedCompareTranslation.toString(), selectedBook.name, selectedChapter, selectedVerse)
+      setGeminiResponse(res)
+    } else {
+      let res = await compareManyVerses(selectedTranslation.toString(), selectedCompareTranslation.toString(), selectedBook.name, selectedChapter, selectedVerse, selectedEndingVerse)
+      setGeminiResponse(res)
+      console.log(res)
+      if (res.main) {
+        setGeminiMain(res.main)
+      } else {
+        setGeminiMain("Something went wrong, please try again")
+      }
+      if (res.funFact) {
+        setGeminiFunFact(res.funFact)
+      }
+      if (res.crossRef) {
+        setGeminiCrossRef(res.crossRef)
+      }
+    }
+  }
 
   function confirm() {
     callVerses()
@@ -459,6 +501,7 @@ const Home: React.FC = () => {
         {/* Verse Card 1 */}
         {versesOne ? (
           <>
+            <br />
             <IonCard
               className='verse-card'>
               <IonCardContent>
@@ -494,13 +537,14 @@ const Home: React.FC = () => {
               </IonCardContent>
             </IonCard>
 
-            <IonCard className='compare-to'>
+            {/* <IonCard className='compare-to'>
               <IonCardContent>
                 <div className='compare-to-text'>
                   Compare to
                 </div>
               </IonCardContent>
-            </IonCard>
+            </IonCard> */}
+            <br />
             {readyForCompare ? (
               <>
                 <IonCard
@@ -553,6 +597,14 @@ const Home: React.FC = () => {
                     </IonCard>
                   </IonCardContent>
                 </IonCard>
+                {versesTwo ? (
+                  <>
+                  <br/><br/><br/><br/>
+                  </>
+                ) : (
+                  <>
+                  </>
+                )}
               </>
             ) : (
               <>
@@ -581,22 +633,94 @@ const Home: React.FC = () => {
             </IonCard>
           </>
         )}
+        <div className='gemini-word gemini-footprint'>Made with Gemini</div>
         {versesTwo ? (
           <>
-            <IonCard className='verse-card'>
-              <IonCardContent>
-                <IonButton fill='clear' className='col-12 compare-button' id="open-modal" expand="block"
-                  onClick={() => console.log("compare")}>
-                  Compare
-                </IonButton>
-              </IonCardContent>
-            </IonCard>
+            <IonRow>
+              <IonCol size='6'>
+              </IonCol>
+              <IonCol size='6'>
+                <IonCard className='verse-card footer'>
+                  <IonCardContent>
+                    <IonButton
+                      fill='clear'
+                      className='compare-button'
+                      expand="block"
+                      onClick={() => {
+                        compareVerses();
+                        setIsModalTwoOpen(true);
+                      }}>
+                      Compare
+                    </IonButton>
+                  </IonCardContent>
+                </IonCard>
+              </IonCol>
+            </IonRow>
           </>
+
         ) : (
           <>
           </>
         )}
-        {/* Selector */}
+        <IonModal isOpen={isModalTwoOpen}>
+          <IonHeader>
+            <IonToolbar>
+              <IonButtons slot="start">
+                <IonButton onClick={() => setIsModalTwoOpen(false)}>Close</IonButton>
+              </IonButtons>
+              <IonTitle slot='end' className='gemini-word'><b>Google Gemini</b></IonTitle>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent className="ion-padding">
+            <IonRow>
+              {geminiLoading ? (
+                <>
+                  Loading bar here
+                </>
+              ) : (
+                <>
+                  {geminiMain ? (
+                    <>
+                      <IonCard className='main-res'>
+                        <IonCardContent>
+                          <TextDisplay text={geminiMain} />
+                        </IonCardContent>
+                      </IonCard>
+                    </>
+                  ) : (
+                    <>
+                    </>
+                  )}
+                  {geminiCrossRef ? (
+                    <>
+                      <IonCard className='cross-reference'>
+                        <IonCardContent>
+                          <TextDisplay text={geminiCrossRef} />
+                        </IonCardContent>
+                      </IonCard>
+                    </>
+                  ) : (
+                    <>
+                    </>
+                  )}
+                  {geminiFunFact ? (
+                    <>
+                      <IonCard className='fun-fact'>
+                        <IonCardContent>
+                          <TextDisplay text={geminiFunFact} />
+                        </IonCardContent>
+                      </IonCard>
+                    </>
+                  ) : (
+                    <>
+                    </>
+                  )}
+                </>
+              )}
+            </IonRow>
+          </IonContent>
+        </IonModal>
+        {/* Selector Modal */}
         <IonModal ref={modal} trigger="open-modal">
           <IonHeader>
             <IonToolbar>
