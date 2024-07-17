@@ -1,54 +1,52 @@
-* {
-    font-family: "Bebas Neue", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-}
-
 .selector-bar {
-    /* background-color: #2C4A86; */
-    border-radius: 15px;
     margin: 15px;
 }
 
 .item-selector-button {
-    margin: 2px;
+    margin: 2px 10px 2px 10px;
     padding: 4px;
     border-radius: 5px;
-    background-color: #192641;
-    border: 1px solid #192641;
+    background-color: var(--highlight-color);
+    border: 1px solid rgb(194, 193, 193);
+    color: white;
 }
 
 .item-selector-button:hover {
     border: 1px solid white;
 }
-
 .item-selector-button-selected {
     border: 1px solid white;
 }
 
 .custom-popover {
-    /* max-height: 550px; */
-    /* Adjust the max-height as needed */
     overflow-y: auto;
 }
 
 .selector-button {
-    background-color: #192641;
+    background-color: var(--verse-card-color);
     border-radius: 15px;
+    color: white;
+    border: 1px solid rgb(212, 212, 212);
 }
 
 .search-word {
     margin-left: 5px;
+    color: white;
 }
 
 .verse-card {
     background-color: var(--verse-card-color);
 }
 
+.search-icon {
+    color: white;
+}
+
 .inner-verse-card {
     margin: 5px 0px 5px 0px;
-    background-color: #141a27;
+    background-color: var(--highlight-color);
     border: 1px solid #7f98cc;
+    color: white;
 }
 
 .selector-translation-button {
@@ -56,17 +54,18 @@
     font-size: 18px;
     border: 1px solid #7f98cc;
     border-radius: 3px;
-    background-color: #141a27;
+    background-color: var(--highlight-color);
+    color: white;
+    text-decoration: underline;
 }
 
 .compare-to {
     background-color: #192641;
 }
-
 .compare-to-text {
     text-align: center;
     font-size: 18px;
-}
+  }
 
 .gemini-word {
     background: linear-gradient(to right, #4285f4, 0, #9b72cb 9%, #4285f4 44%, #d96570 20%, #d96570 24%, #9b72cb 35%, #9b72cb 50%, #d96570 56%);
@@ -76,7 +75,7 @@
 }
 
 .gemini-footprint {
-    font-size: 24px;
+    font-size: 16px;
     margin-left: 10px;
     bottom: 0;
     position: fixed;
@@ -103,17 +102,27 @@
 }
 
 .main-res {
-    background: linear-gradient(to right, #131825, #141c2e, #141c2e, #141c2e, #141c2e, #121b30, #17223b, #1a2748)!important;
+    background: linear-gradient(to right, var(--gradient-blue-very-dark), var(--gradient-blue-dark), var(--gradient-blue-dark), var(--gradient-blue-dark), var(--gradient-blue-dark), var(--gradient-blue), var(--gradient-blue-light), var(--gradient-blue-lighter))!important;
     border-radius: 15px;
     border: 1px solid #4285f4; 
+    color: white;
 }
 .cross-reference {
-    background: linear-gradient(to right, #141c2e, #141c2e, #141c2e, #141c2e, #141c2e, #121b30, #1a2745, #223461)!important;
+    background: linear-gradient(to right, var(--gradient-red-very-dark), var(--gradient-red-dark), var(--gradient-red-dark), var(--gradient-red-dark), var(--gradient-red-dark), var(--gradient-red), var(--gradient-red-light), var(--gradient-red-lighter))!important;
     border-radius: 20px;
-    border: 1px solid #4285f4; 
+    border: 1px solid #f45a42; 
+    color: white;
 }
 .fun-fact {
-    background: linear-gradient(to right, #0a110a, #0a110a, #0a110a, #0a110a)!important;
+    background: linear-gradient(to right, var(--gradient-green-very-dark), var(--gradient-green-dark), var(--gradient-green-dark), var(--gradient-green-dark), var(--gradient-green-dark), var(--gradient-green), var(--gradient-green-light), var(--gradient-green-lighter))!important;
     border-radius: 20px;
     border: 1px solid #6cb863; 
+    color: white;
+}
+.gemini-card-header {
+    text-align: center;
+    text-decoration: underline;
+    margin-bottom: 8px;
+    font-size: 16px;
+    font-weight: 800;
 }

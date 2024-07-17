@@ -42,6 +42,7 @@ const Home: React.FC = () => {
   const { compareOneVerse, compareManyVerses } = useGemini();
 
   async function compareVerses() {
+
     if (!selectedCompareTranslation) {
       return
     }
@@ -55,6 +56,7 @@ const Home: React.FC = () => {
       return
     }
     if (selectedVerse === selectedEndingVerse) {
+      console.log("test")
       let res = await compareOneVerse(selectedTranslation.toString(), selectedCompareTranslation.toString(), selectedBook.name, selectedChapter, selectedVerse)
       setGeminiResponse(res)
     } else {
@@ -480,7 +482,9 @@ const Home: React.FC = () => {
           <div className='selector-bar'>
             <IonButton fill='clear' className='selector-button' id="open-modal" expand="block">
               <IonRow>
-                <IonIcon icon={search}></IonIcon>
+                <IonIcon
+                  className='search-icon'
+                  icon={search}></IonIcon>
                 <div className='search-word'>
                   {versesOne ? (
                     <>
@@ -522,11 +526,11 @@ const Home: React.FC = () => {
                   size="auto"
                   className="custom-popover"
                 >
-                  <div key="NLT1" className='item-selector-button' onClick={() => handleTranslationClick("NLT")}>"NLT"</div>
-                  <div key="KJV1" className='item-selector-button' onClick={() => handleTranslationClick("KJV")}>"KJV"</div>
-                  <div key="ESV1" className='item-selector-button' onClick={() => handleTranslationClick("ESV")}>"ESV"</div>
-                  <div key="NIV1" className='item-selector-button' onClick={() => handleTranslationClick("NIV")}>"NIV"</div>
-                  <div key="ASV1" className='item-selector-button' onClick={() => handleTranslationClick("ASV")}>"ASV"</div>
+                  <div key="NLT1" className='item-selector-button' onClick={() => handleTranslationClick("NLT")}>NLT</div>
+                  <div key="KJV1" className='item-selector-button' onClick={() => handleTranslationClick("KJV")}>KJV</div>
+                  <div key="ESV1" className='item-selector-button' onClick={() => handleTranslationClick("ESV")}>ESV</div>
+                  <div key="NIV1" className='item-selector-button' onClick={() => handleTranslationClick("NIV")}>NIV</div>
+                  <div key="ASV1" className='item-selector-button' onClick={() => handleTranslationClick("ASV")}>ASV</div>
                 </IonPopover>
 
                 <IonCard className='inner-verse-card'>
@@ -575,11 +579,11 @@ const Home: React.FC = () => {
                       size="auto"
                       className="custom-popover"
                     >
-                      <div key="NLT2" className='item-selector-button' onClick={() => handleTranslationCompareClick("NLT")}>"NLT"</div>
-                      <div key="KJV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("KJV")}>"KJV"</div>
-                      <div key="ESV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("ESV")}>"ESV"</div>
-                      <div key="NIV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("NIV")}>"NIV"</div>
-                      <div key="ASV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("ASV")}>"ASV"</div>
+                      <div key="NLT2" className='item-selector-button' onClick={() => handleTranslationCompareClick("NLT")}>NLT</div>
+                      <div key="KJV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("KJV")}>KJV</div>
+                      <div key="ESV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("ESV")}>ESV</div>
+                      <div key="NIV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("NIV")}>NIV</div>
+                      <div key="ASV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("ASV")}>ASV</div>
                     </IonPopover>
 
                     <IonCard className='inner-verse-card'>
@@ -599,7 +603,7 @@ const Home: React.FC = () => {
                 </IonCard>
                 {versesTwo ? (
                   <>
-                  <br/><br/><br/><br/>
+                    <br /><br /><br /><br />
                   </>
                 ) : (
                   <>
@@ -683,6 +687,9 @@ const Home: React.FC = () => {
                     <>
                       <IonCard className='main-res'>
                         <IonCardContent>
+                          <div className='gemini-card-header'>
+                            Main Differences
+                          </div>
                           <TextDisplay text={geminiMain} />
                         </IonCardContent>
                       </IonCard>
@@ -695,6 +702,9 @@ const Home: React.FC = () => {
                     <>
                       <IonCard className='cross-reference'>
                         <IonCardContent>
+                          <div className='gemini-card-header'>
+                            Cross-References
+                          </div>
                           <TextDisplay text={geminiCrossRef} />
                         </IonCardContent>
                       </IonCard>
@@ -707,6 +717,9 @@ const Home: React.FC = () => {
                     <>
                       <IonCard className='fun-fact'>
                         <IonCardContent>
+                          <div className='gemini-card-header'>
+                            Fun Facts
+                          </div>
                           <TextDisplay text={geminiFunFact} />
                         </IonCardContent>
                       </IonCard>

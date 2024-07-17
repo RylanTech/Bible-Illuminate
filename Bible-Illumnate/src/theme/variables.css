@@ -1,11 +1,52 @@
 /* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */
 :root {
-    --verse-card-color: #4660bc;
-  }
+  --verse-card-color: #4660bc;
+  --highlight-color: #566dc1;
+
   
-  @media (prefers-color-scheme: dark) {
-    :root {
-        --verse-card-color: #141c36;
-    }
+    /* gradients */
+    --gradient-blue-very-dark: #c0cef3;
+    --gradient-blue-dark: #6b8bd4;
+    --gradient-blue: #5170b7;
+    --gradient-blue-light: #5471b5;
+    --gradient-blue-lighter: #3e5aa2;
+
+    --gradient-red-very-dark: #e6a9a9;
+    --gradient-red-dark: #d06565;
+    --gradient-red: #b04c4c;
+    --gradient-red-light: #a13f3f;
+    --gradient-red-lighter: #802424;
+
+    --gradient-green-very-dark: #a2eab4;
+    --gradient-green-dark: #75c171;
+    --gradient-green: #518d51;
+    --gradient-green-light: #2c7d3f;
+    --gradient-green-lighter: #156d15;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --verse-card-color: #141c36;
+    --highlight-color: #263054;
+
+    /* gradients */
+    --gradient-blue-very-dark: #131825;
+    --gradient-blue-dark: #141c2e;
+    --gradient-blue: #121b30;
+    --gradient-blue-light: #17223b;
+    --gradient-blue-lighter: #1a2748;
+  
+    --gradient-red-very-dark: #150d0d;
+    --gradient-red-dark: #1f1111;
+    --gradient-red: #2a1111;
+    --gradient-red-light: #371515;
+    --gradient-red-lighter: #3a1b1b;
+  
+    --gradient-green-very-dark: #0e1610;
+    --gradient-green-dark: #121f11;
+    --gradient-green: #112a11;
+    --gradient-green-light: #15371d;
+    --gradient-green-lighter: #1b3a1b;
   }
+}
