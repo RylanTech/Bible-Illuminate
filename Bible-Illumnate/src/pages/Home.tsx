@@ -4,12 +4,13 @@ import { useContext, useRef, useState } from 'react';
 import { books } from '../books';
 import { clipboardSharp, search } from 'ionicons/icons'
 import { VerseContext, callingManyVerseBody, callingOneVerseBody } from '../contexts/verseContext';
-import { useGemini } from '../contexts/geminiContext';
+import { geminiResponse, useGemini } from '../contexts/geminiContext';
 import TextDisplay from '../components/textDisplay';
 
 const Home: React.FC = () => {
+
   const [geminiLoading, setGeminiLoading] = useState<boolean>(false);
-  const [geminiResponse, setGeminiResponse] = useState<String>();
+  const [geminiResponse, setGeminiResponse] = useState<geminiResponse | undefined>();
   const [geminiMain, setGeminiMain] = useState<String | undefined>();
   const [geminiFunFact, setGeminiFunFact] = useState<String | undefined>();
   const [geminiCrossRef, setGeminiCrossRef] = useState<String | undefined>();
@@ -39,7 +40,7 @@ const Home: React.FC = () => {
   const [readyForCompare, setReadyForCompare] = useState(false)
 
   const { getOneVerse, getManyVerses } = useContext(VerseContext);
-  const { compareOneVerse, compareManyVerses } = useGemini();
+  const { compareOneVerse, compareManyVerses, saveComparison } = useGemini();
 
   async function compareVerses() {
 
@@ -55,26 +56,56 @@ const Home: React.FC = () => {
     if (!selectedEndingVerse) {
       return
     }
+    setGeminiLoading(true)
     if (selectedVerse === selectedEndingVerse) {
-      console.log("test")
-      let res = await compareOneVerse(selectedTranslation.toString(), selectedCompareTranslation.toString(), selectedBook.name, selectedChapter, selectedVerse)
-      setGeminiResponse(res)
+      await compareOneVerse(selectedTranslation.toString(), selectedCompareTranslation.toString(), selectedBook.name, selectedChapter, selectedVerse)
+        .then((res) => {
+          setGeminiLoading(false)
+          setGeminiResponse(res)
+          if (res.main) {
+            setGeminiMain(res.main)
+          } else {
+            setGeminiMain("Something went wrong, please try again")
+          }
+          if (res.funFact) {
+            setGeminiFunFact(res.funFact)
+          }
+          if (res.crossRef) {
+            setGeminiCrossRef(res.crossRef)
+          }
+        })
     } else {
-      let res = await compareManyVerses(selectedTranslation.toString(), selectedCompareTranslation.toString(), selectedBook.name, selectedChapter, selectedVerse, selectedEndingVerse)
-      setGeminiResponse(res)
-      console.log(res)
-      if (res.main) {
-        setGeminiMain(res.main)
-      } else {
-        setGeminiMain("Something went wrong, please try again")
-      }
-      if (res.funFact) {
-        setGeminiFunFact(res.funFact)
-      }
-      if (res.crossRef) {
-        setGeminiCrossRef(res.crossRef)
-      }
+      await compareManyVerses(selectedTranslation.toString(), selectedCompareTranslation.toString(), selectedBook.name, selectedChapter, selectedVerse, selectedEndingVerse)
+        .then((res) => {
+          setGeminiLoading(false)
+          setGeminiResponse(res)
+          if (res.main) {
+            setGeminiMain(res.main)
+          } else {
+            setGeminiMain("Something went wrong, please try again")
+          }
+          if (res.funFact) {
+            setGeminiFunFact(res.funFact)
+          }
+          if (res.crossRef) {
+            setGeminiCrossRef(res.crossRef)
+          }
+        })
     }
+  }
+
+  async function saveSetComparison() {
+    if (!geminiResponse) {
+      return
+    }
+    if (selectedVerse === selectedEndingVerse) {
+      geminiResponse.passage = `${selectedBook.name} ${selectedChapter}, ${selectedVerse}`
+    } else {
+      geminiResponse.passage = `${selectedBook.name} ${selectedChapter}, ${selectedVerse} - ${selectedEndingVerse}`
+    }
+    geminiResponse.translations = `${selectedTranslation} - ${selectedCompareTranslation}`
+    geminiResponse.creationDate = Date.now()
+    await saveComparison(geminiResponse)
   }
 
   function confirm() {
@@ -723,9 +754,36 @@ const Home: React.FC = () => {
                           <TextDisplay text={geminiFunFact} />
                         </IonCardContent>
                       </IonCard>
+                      <br /><br /><br /><br />
                     </>
                   ) : (
                     <>
+                    </>
+                  )}
+                  {geminiLoading ? (
+                    <>
+                    </>
+                  ) : (
+                    <>
+                      <IonRow>
+                        <IonCol size='6'>
+                        </IonCol>
+                        <IonCol size='6'>
+                          <IonCard className='verse-card footer'>
+                            <IonCardContent>
+                              <IonButton
+                                fill='clear'
+                                className='compare-button'
+                                expand="block"
+                                onClick={() => {
+                                  saveSetComparison()
+                                }}>
+                                Save
+                              </IonButton>
+                            </IonCardContent>
+                          </IonCard>
+                        </IonCol>
+                      </IonRow>
                     </>
                   )}
                 </>

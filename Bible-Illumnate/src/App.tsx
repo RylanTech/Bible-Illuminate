@@ -33,6 +33,7 @@ import '@ionic/react/css/palettes/dark.system.css';
 /* Theme variables */
 import './theme/variables.css';
 import { book, save } from 'ionicons/icons';
+import Saved from './pages/Saved';
 
 setupIonicReact();
 
@@ -44,6 +45,9 @@ const App: React.FC = () => (
           <Route exact path="/" render={() => <Redirect to="/home" />} />
           <Route path="/home">
             <Home />
+          </Route>
+          <Route path="/saved">
+            <Saved />
           </Route>
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
