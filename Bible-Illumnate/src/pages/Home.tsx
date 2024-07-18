@@ -1,8 +1,8 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonModal, IonPage, IonPopover, IonRow, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonModal, IonPage, IonPopover, IonProgressBar, IonRow, IonTitle, IonToolbar } from '@ionic/react';
 import './Home.css';
 import { useContext, useRef, useState } from 'react';
 import { books } from '../books';
-import { clipboardSharp, search } from 'ionicons/icons'
+import { search } from 'ionicons/icons'
 import { VerseContext, callingManyVerseBody, callingOneVerseBody } from '../contexts/verseContext';
 import { geminiResponse, useGemini } from '../contexts/geminiContext';
 import TextDisplay from '../components/textDisplay';
@@ -14,6 +14,8 @@ const Home: React.FC = () => {
   const [geminiMain, setGeminiMain] = useState<String | undefined>();
   const [geminiFunFact, setGeminiFunFact] = useState<String | undefined>();
   const [geminiCrossRef, setGeminiCrossRef] = useState<String | undefined>();
+  const [geminiError, setGeminiError] = useState<boolean>(false)
+  const [comparisonSaved, setComparisonSaved] = useState<boolean>(false)
 
   const [versesOne, setVersesOne] = useState<string | undefined>()
   const [versesTwo, setVersesTwo] = useState<string | undefined>()
@@ -43,7 +45,11 @@ const Home: React.FC = () => {
   const { compareOneVerse, compareManyVerses, saveComparison } = useGemini();
 
   async function compareVerses() {
-
+    setGeminiMain(undefined)
+    setGeminiFunFact(undefined)
+    setGeminiCrossRef(undefined)
+    setComparisonSaved(false)
+    setGeminiError(false)
     if (!selectedCompareTranslation) {
       return
     }
@@ -58,39 +64,49 @@ const Home: React.FC = () => {
     }
     setGeminiLoading(true)
     if (selectedVerse === selectedEndingVerse) {
-      await compareOneVerse(selectedTranslation.toString(), selectedCompareTranslation.toString(), selectedBook.name, selectedChapter, selectedVerse)
-        .then((res) => {
-          setGeminiLoading(false)
-          setGeminiResponse(res)
-          if (res.main) {
-            setGeminiMain(res.main)
-          } else {
-            setGeminiMain("Something went wrong, please try again")
-          }
-          if (res.funFact) {
-            setGeminiFunFact(res.funFact)
-          }
-          if (res.crossRef) {
-            setGeminiCrossRef(res.crossRef)
-          }
-        })
+      try {
+        await compareOneVerse(selectedTranslation.toString(), selectedCompareTranslation.toString(), selectedBook.name, selectedChapter, selectedVerse)
+          .then((res) => {
+            setGeminiLoading(false)
+            setGeminiResponse(res)
+            if (res.main) {
+              setGeminiMain(res.main)
+            } else {
+              setGeminiMain("Something went wrong, please try again")
+            }
+            if (res.funFact) {
+              setGeminiFunFact(res.funFact)
+            }
+            if (res.crossRef) {
+              setGeminiCrossRef(res.crossRef)
+            }
+          })
+      } catch {
+        setGeminiLoading(false)
+        setGeminiError(true)
+      }
     } else {
-      await compareManyVerses(selectedTranslation.toString(), selectedCompareTranslation.toString(), selectedBook.name, selectedChapter, selectedVerse, selectedEndingVerse)
-        .then((res) => {
-          setGeminiLoading(false)
-          setGeminiResponse(res)
-          if (res.main) {
-            setGeminiMain(res.main)
-          } else {
-            setGeminiMain("Something went wrong, please try again")
-          }
-          if (res.funFact) {
-            setGeminiFunFact(res.funFact)
-          }
-          if (res.crossRef) {
-            setGeminiCrossRef(res.crossRef)
-          }
-        })
+      try {
+        await compareManyVerses(selectedTranslation.toString(), selectedCompareTranslation.toString(), selectedBook.name, selectedChapter, selectedVerse, selectedEndingVerse)
+          .then((res) => {
+            setGeminiLoading(false)
+            setGeminiResponse(res)
+            if (res.main) {
+              setGeminiMain(res.main)
+            } else {
+              setGeminiMain("Something went wrong, please try again")
+            }
+            if (res.funFact) {
+              setGeminiFunFact(res.funFact)
+            }
+            if (res.crossRef) {
+              setGeminiCrossRef(res.crossRef)
+            }
+          })
+      } catch {
+        setGeminiLoading(false)
+        setGeminiError(true)
+      }
     }
   }
 
@@ -105,6 +121,7 @@ const Home: React.FC = () => {
     }
     geminiResponse.translations = `${selectedTranslation} - ${selectedCompareTranslation}`
     geminiResponse.creationDate = Date.now()
+    setComparisonSaved(true)
     await saveComparison(geminiResponse)
   }
 
@@ -571,14 +588,6 @@ const Home: React.FC = () => {
                 </IonCard>
               </IonCardContent>
             </IonCard>
-
-            {/* <IonCard className='compare-to'>
-              <IonCardContent>
-                <div className='compare-to-text'>
-                  Compare to
-                </div>
-              </IonCardContent>
-            </IonCard> */}
             <br />
             {readyForCompare ? (
               <>
@@ -705,15 +714,32 @@ const Home: React.FC = () => {
               </IonButtons>
               <IonTitle slot='end' className='gemini-word'><b>Google Gemini</b></IonTitle>
             </IonToolbar>
+            {geminiLoading ? (
+              <>
+                <IonProgressBar type="indeterminate"></IonProgressBar>
+              </>
+            ) : <>
+            </>}
           </IonHeader>
           <IonContent className="ion-padding">
             <IonRow>
               {geminiLoading ? (
                 <>
-                  Loading bar here
                 </>
               ) : (
                 <>
+                  {geminiError ? (
+                    <>
+                      <IonCard className='cross-reference'>
+                        <IonCardContent>
+                          An error has occured, please try again
+                        </IonCardContent>
+                      </IonCard>
+                    </>
+                  ) : (
+                    <>
+                    </>
+                  )}
                   {geminiMain ? (
                     <>
                       <IonCard className='main-res'>
@@ -765,25 +791,49 @@ const Home: React.FC = () => {
                     </>
                   ) : (
                     <>
-                      <IonRow>
-                        <IonCol size='6'>
-                        </IonCol>
-                        <IonCol size='6'>
-                          <IonCard className='verse-card footer'>
-                            <IonCardContent>
-                              <IonButton
-                                fill='clear'
-                                className='compare-button'
-                                expand="block"
-                                onClick={() => {
-                                  saveSetComparison()
-                                }}>
-                                Save
-                              </IonButton>
-                            </IonCardContent>
-                          </IonCard>
-                        </IonCol>
-                      </IonRow>
+                      {geminiError ? (
+                        <>
+                        </>
+                      ) : (
+                        <>
+                          <IonRow>
+                            <IonCol size='6'>
+                            </IonCol>
+                            {comparisonSaved ? (
+                              <>
+                                <IonCol size='6'>
+                                  <IonCard className='verse-card footer'>
+                                    <IonCardContent>
+                                      <div
+                                        className='compared-button'>
+                                        Saved
+                                      </div>
+                                    </IonCardContent>
+                                  </IonCard>
+                                </IonCol>
+                              </>
+                            ) : (
+                              <>
+                                <IonCol size='6'>
+                                  <IonCard className='verse-card footer'>
+                                    <IonCardContent>
+                                      <IonButton
+                                        fill='clear'
+                                        className='compare-button'
+                                        expand="block"
+                                        onClick={() => {
+                                          saveSetComparison()
+                                        }}>
+                                        Save
+                                      </IonButton>
+                                    </IonCardContent>
+                                  </IonCard>
+                                </IonCol>
+                              </>
+                            )}
+                          </IonRow>
+                        </>
+                      )}
                     </>
                   )}
                 </>

@@ -12,7 +12,7 @@ const Saved: React.FC = () => {
     const [geminiCrossRef, setGeminiCrossRef] = useState<string | undefined>()
     const [geminiFunFact, setGeminiFunFact] = useState<string | undefined>()
     const [passage, setPassage] = useState<string | undefined>()
-
+    
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
     const { getComparisons, deleteSavedComparison } = useGemini();
@@ -90,7 +90,9 @@ const Saved: React.FC = () => {
             <IonPage>
                 <IonHeader>
                     <IonToolbar>
-
+                        <div className="sc-heading">
+                        Saved Compares
+                        </div>
                     </IonToolbar>
                 </IonHeader>
                 <IonContent fullscreen>

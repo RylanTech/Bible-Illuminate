@@ -24,16 +24,20 @@ export interface geminiResponse {
     translations: string,
     creationDate: Number,
     id: number,
-  }
+}
 
 
 export const GeminiProvider: React.FC<GeminiProviderProps> = ({ children }) => {
     // const baseUrl = 'http://192.168.1.17:3001/api/gemini/';
     const baseUrl = 'http://localhost:3001/api/gemini/';
 
-    const compareOneVerse = (translationOne: string, translationTwo: string, book: string, chapter: number, verse: number): Promise<any> => {
-        return axios.get(`${baseUrl}compare-one/${translationOne}/${translationTwo}/${book}/${chapter}/${verse}`)
-            .then(response => response.data);
+    const compareOneVerse = async (translationOne: string, translationTwo: string, book: string, chapter: number, verse: number): Promise<any> => {
+        try {
+            const response = await axios.get(`${baseUrl}compare-one/${translationOne}/${translationTwo}/${book}/${chapter}/${verse}`);
+            return response.data;
+        } catch (error) {
+            return Promise.reject(error);
+        }
     };
 
     const compareManyVerses = (translationOne: string, translationTwo: string, book: string, chapter: number, verseOne: number, verseTwo: number): Promise<any> => {
@@ -42,13 +46,16 @@ export const GeminiProvider: React.FC<GeminiProviderProps> = ({ children }) => {
     };
 
     const saveComparison = async (compareData: geminiResponse): Promise<any> => {
-
-        let compares = localStorage.getItem("saved-compares");
-        let parsedCompares = compares ? JSON.parse(compares) : [];
-        compareData.id = parsedCompares.length
-        parsedCompares.push(compareData);
-        localStorage.setItem("saved-compares", JSON.stringify(parsedCompares));
-        return JSON.stringify(parsedCompares);
+        try {
+            let compares = localStorage.getItem("saved-compares");
+            let parsedCompares = compares ? JSON.parse(compares) : [];
+            compareData.id = parsedCompares.length;
+            parsedCompares.unshift(compareData);  // Add new data at the beginning
+            localStorage.setItem("saved-compares", JSON.stringify(parsedCompares));
+            return JSON.stringify(parsedCompares);
+        } catch (error) {
+            return Promise.reject(error);
+        }
     };
 
     const getComparisons = async (): Promise<any> => {

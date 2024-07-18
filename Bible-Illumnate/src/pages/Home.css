@@ -83,11 +83,22 @@
 }
 
 .compare-button {
+    background: linear-gradient(to right, #9b72cb, #d96570, #4285f4) !important;
     background-color: #141a27 !important;
     border: 2px solid white !important;
     border-radius: 4px;
     color: white;
 }
+
+.compared-button {
+    background: linear-gradient(to right, #9b72cb, #d96570, #4285f4) !important;
+    background-color: #141a27 !important;
+    border: 2px solid white !important;
+    border-radius: 4px;
+    color: white;
+    padding: 9px 18px;
+}
+
 
 .footer {
     position: fixed;
@@ -95,10 +106,6 @@
     right: 0 !important;
     margin: 10px;
     z-index: 3;
-}
-
-.compare-button {
-    background: linear-gradient(to right, #9b72cb, #d96570, #4285f4) !important;
 }
 
 .main-res {
