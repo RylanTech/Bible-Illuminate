@@ -96,7 +96,8 @@
     border: 2px solid white !important;
     border-radius: 4px;
     color: white;
-    padding: 9px 18px;
+    padding: 10px 15px;
+
 }
 
 
@@ -112,19 +113,25 @@
     background: linear-gradient(to right, var(--gradient-blue-very-dark), var(--gradient-blue-dark), var(--gradient-blue-dark), var(--gradient-blue-dark), var(--gradient-blue-dark), var(--gradient-blue), var(--gradient-blue-light), var(--gradient-blue-lighter))!important;
     border-radius: 15px;
     border: 1px solid #4285f4; 
-    color: white;
+    color: var(--gemini-card-text-color);
 }
 .cross-reference {
     background: linear-gradient(to right, var(--gradient-red-very-dark), var(--gradient-red-dark), var(--gradient-red-dark), var(--gradient-red-dark), var(--gradient-red-dark), var(--gradient-red), var(--gradient-red-light), var(--gradient-red-lighter))!important;
     border-radius: 20px;
     border: 1px solid #f45a42; 
-    color: white;
+    color: var(--gemini-card-text-color);
 }
 .fun-fact {
     background: linear-gradient(to right, var(--gradient-green-very-dark), var(--gradient-green-dark), var(--gradient-green-dark), var(--gradient-green-dark), var(--gradient-green-dark), var(--gradient-green), var(--gradient-green-light), var(--gradient-green-lighter))!important;
     border-radius: 20px;
     border: 1px solid #6cb863; 
-    color: white;
+    color: var(--gemini-card-text-color);
+}
+.history {
+    background: linear-gradient(to right, var(--gradient-yellow-very-dark), var(--gradient-yellow-dark), var(--gradient-yellow-dark), var(--gradient-yellow-dark), var(--gradient-yellow-dark), var(--gradient-yellow), var(--gradient-yellow-light), var(--gradient-yellow-lighter))!important;
+    border-radius: 20px;
+    border: 1px solid #deb441; 
+    color: var(--gemini-card-text-color);
 }
 .gemini-card-header {
     text-align: center;

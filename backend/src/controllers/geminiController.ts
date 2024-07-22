@@ -4,7 +4,7 @@ import { RequestHandler } from "express"
 let googleAPIkey: string = process.env.GOOGLE_API_KEY || ""; // Empty string as default
 let genAI = new GoogleGenerativeAI(googleAPIkey)
 
-export const compareOne: RequestHandler = async (req, res, next) => {
+export const compareTwoTranslationsOneVerse: RequestHandler = async (req, res, next) => {
     try {
         let translationOne: string = req.params.translationOne
         let translationTwo: string = req.params.translationTwo
@@ -17,6 +17,7 @@ export const compareOne: RequestHandler = async (req, res, next) => {
         Please do not quote the verses`
         const promptTwo = `In short, could you give me an interesting fact about this verse?`;
         const promptThree = `In short, if you can find any, could you give me a cross-reference of this scripture in the bible? If there aren't any obvious ones, reply with "no obvious cross-references"`;
+        const promptFour = `In short, could you give me some historical information such as the writer, when it was written, why it was written and to whom it was written to.`
         
 
         const chat = model.startChat({
@@ -28,20 +29,24 @@ export const compareOne: RequestHandler = async (req, res, next) => {
 
         const firstContact = await chat.sendMessage(promptOne);
         const secondContact = await chat.sendMessage(promptTwo);
-        const thirdContact = await chat.sendMessage(promptThree)
+        const thirdContact = await chat.sendMessage(promptThree);
+        const fourthContact = await chat.sendMessage(promptFour);
 
         const responseOne = await firstContact.response
         const responseTwo = await secondContact.response
         const responseThree = await thirdContact.response
+        const responseFour = await fourthContact.response
 
         const textOne = responseOne.text()
         const textTwo = responseTwo.text()
         const textThree = responseThree.text()
+        const textFour = responseFour.text()
 
         const fullResponse = {
             main: textOne,
             funFact: textTwo,
-            crossRef: textThree
+            crossRef: textThree,
+            history: textFour
         }
 
         res.status(200).send(fullResponse)
@@ -50,7 +55,7 @@ export const compareOne: RequestHandler = async (req, res, next) => {
     }
 }
 
-export const compareMultiple: RequestHandler = async (req, res, next) => {
+export const compareTwoTranslationsMultipleVerses: RequestHandler = async (req, res, next) => {
     try {
         let translationOne: string = req.params.translationOne
         let translationTwo: string = req.params.translationTwo
@@ -64,7 +69,7 @@ export const compareMultiple: RequestHandler = async (req, res, next) => {
         Please do not quote the verses`
         const promptTwo = `In short, Could you give me an interesting fact about these verses?`;
         const promptThree = `In short, if you can find any, could you give me a cross-reference of this scripture in the bible? If there aren't any obvious ones, reply with "no obvious cross-references"`;
-
+        const promptFour = `In short, could you give me some historical information such as the writer, when it was written, why it was written and to whom it was written to.`
 
         const chat = model.startChat({
             history: [],
@@ -75,20 +80,24 @@ export const compareMultiple: RequestHandler = async (req, res, next) => {
 
         const firstContact = await chat.sendMessage(promptOne);
         const secondContact = await chat.sendMessage(promptTwo);
-        const thirdContact = await chat.sendMessage(promptThree)
+        const thirdContact = await chat.sendMessage(promptThree);
+        const fourthContact = await chat.sendMessage(promptFour);
 
         const responseOne = await firstContact.response
         const responseTwo = await secondContact.response
         const responseThree = await thirdContact.response
+        const responseFour = await fourthContact.response
 
         const textOne = responseOne.text()
         const textTwo = responseTwo.text()
         const textThree = responseThree.text()
+        const textFour = responseFour.text()
 
         const fullResponse = {
             main: textOne,
             funFact: textTwo,
-            crossRef: textThree
+            crossRef: textThree,
+            history: textFour
         }
 
         res.status(200).send(fullResponse)

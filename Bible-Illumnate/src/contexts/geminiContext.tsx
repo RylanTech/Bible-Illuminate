@@ -20,6 +20,7 @@ export interface geminiResponse {
     main: string,
     crossRef: string,
     funFact: string,
+    history: string,
     passage: string,
     translations: string,
     creationDate: Number,
@@ -28,7 +29,6 @@ export interface geminiResponse {
 
 
 export const GeminiProvider: React.FC<GeminiProviderProps> = ({ children }) => {
-    // const baseUrl = 'http://192.168.1.17:3001/api/gemini/';
     const baseUrl = 'http://localhost:3001/api/gemini/';
 
     const compareOneVerse = async (translationOne: string, translationTwo: string, book: string, chapter: number, verse: number): Promise<any> => {

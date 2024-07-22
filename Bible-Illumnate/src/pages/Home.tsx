@@ -14,6 +14,7 @@ const Home: React.FC = () => {
   const [geminiMain, setGeminiMain] = useState<String | undefined>();
   const [geminiFunFact, setGeminiFunFact] = useState<String | undefined>();
   const [geminiCrossRef, setGeminiCrossRef] = useState<String | undefined>();
+  const [geminiHistory, setGmeiniHistory] = useState<String | undefined>();
   const [geminiError, setGeminiError] = useState<boolean>(false)
   const [comparisonSaved, setComparisonSaved] = useState<boolean>(false)
 
@@ -44,6 +45,26 @@ const Home: React.FC = () => {
   const { getOneVerse, getManyVerses } = useContext(VerseContext);
   const { compareOneVerse, compareManyVerses, saveComparison } = useGemini();
 
+  //Research One
+  async function compareVerse() {
+    setGeminiMain(undefined)
+    setGeminiFunFact(undefined)
+    setGeminiCrossRef(undefined)
+    setComparisonSaved(false)
+    setGeminiError(false)
+    setGeminiLoading(true)
+
+    if (!selectedChapter) {
+      return
+    }
+    if (!selectedVerse) {
+      return
+    }
+
+    
+  }
+
+  //Research Many
   async function compareVerses() {
     setGeminiMain(undefined)
     setGeminiFunFact(undefined)
@@ -62,7 +83,6 @@ const Home: React.FC = () => {
     if (!selectedEndingVerse) {
       return
     }
-    setGeminiLoading(true)
     if (selectedVerse === selectedEndingVerse) {
       try {
         await compareOneVerse(selectedTranslation.toString(), selectedCompareTranslation.toString(), selectedBook.name, selectedChapter, selectedVerse)
@@ -79,6 +99,9 @@ const Home: React.FC = () => {
             }
             if (res.crossRef) {
               setGeminiCrossRef(res.crossRef)
+            }
+            if (res.history) {
+              setGmeiniHistory(res.history)
             }
           })
       } catch {
@@ -101,6 +124,9 @@ const Home: React.FC = () => {
             }
             if (res.crossRef) {
               setGeminiCrossRef(res.crossRef)
+            }
+            if (res.history) {
+              setGmeiniHistory(res.history)
             }
           })
       } catch {
@@ -369,6 +395,10 @@ const Home: React.FC = () => {
   const handleBookClick = (book: string) => {
     handleSetSelectedBook(book);
     setBookPopoverOpen(false);
+
+    setSelectedChapter(undefined)
+    setSelectedVerse(undefined)
+    setSelectedEndingVerse(undefined)
   };
 
   const handleChapterClick = (chapter: number) => {
@@ -554,43 +584,8 @@ const Home: React.FC = () => {
         {versesOne ? (
           <>
             <br />
-            <IonCard
-              className='verse-card'>
-              <IonCardContent>
-
-                <IonButton
-                  fill='clear'
-                  className='selector-translation-button'
-                  id="select-translation"
-                  expand="block"
-                  onClick={() => setTranslationPopoverOpen(true)}
-                >
-                  {selectedTranslation}
-                </IonButton>
-                <IonPopover
-                  isOpen={translationPopoverOpen}
-                  onDidDismiss={() => setTranslationPopoverOpen(false)}
-                  trigger="select-translation"
-                  size="auto"
-                  className="custom-popover"
-                >
-                  <div key="NLT1" className='item-selector-button' onClick={() => handleTranslationClick("NLT")}>NLT</div>
-                  <div key="KJV1" className='item-selector-button' onClick={() => handleTranslationClick("KJV")}>KJV</div>
-                  <div key="ESV1" className='item-selector-button' onClick={() => handleTranslationClick("ESV")}>ESV</div>
-                  <div key="NIV1" className='item-selector-button' onClick={() => handleTranslationClick("NIV")}>NIV</div>
-                  <div key="ASV1" className='item-selector-button' onClick={() => handleTranslationClick("ASV")}>ASV</div>
-                </IonPopover>
-
-                <IonCard className='inner-verse-card'>
-                  <IonCardContent>
-                    {versesOne}
-                  </IonCardContent>
-                </IonCard>
-              </IonCardContent>
-            </IonCard>
-            <br />
-            {readyForCompare ? (
-              <>
+            <IonRow>
+              <IonCol size='12' sizeLg='6'>
                 <IonCard
                   className='verse-card'>
                   <IonCardContent>
@@ -598,83 +593,128 @@ const Home: React.FC = () => {
                     <IonButton
                       fill='clear'
                       className='selector-translation-button'
-                      id="select-compare-translation"
+                      id="select-translation"
                       expand="block"
-                      onClick={() => setTranslationComparePopoverOpen(true)}
+                      onClick={() => setTranslationPopoverOpen(true)}
                     >
-                      {selectedCompareTranslation ? (
-                        <>
-                          {selectedCompareTranslation}
-                        </>
-                      ) : (
-                        <>
-                          Select Translation
-                        </>
-                      )}
+                      {selectedTranslation}
                     </IonButton>
                     <IonPopover
-                      isOpen={translationComparePopoverOpen}
-                      onDidDismiss={() => setTranslationComparePopoverOpen(false)}
-                      trigger="select-compare-translation"
+                      isOpen={translationPopoverOpen}
+                      onDidDismiss={() => setTranslationPopoverOpen(false)}
+                      trigger="select-translation"
                       size="auto"
                       className="custom-popover"
                     >
-                      <div key="NLT2" className='item-selector-button' onClick={() => handleTranslationCompareClick("NLT")}>NLT</div>
-                      <div key="KJV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("KJV")}>KJV</div>
-                      <div key="ESV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("ESV")}>ESV</div>
-                      <div key="NIV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("NIV")}>NIV</div>
-                      <div key="ASV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("ASV")}>ASV</div>
+                      <div key="NLT1" className='item-selector-button' onClick={() => handleTranslationClick("NLT")}>NLT</div>
+                      <div key="KJV1" className='item-selector-button' onClick={() => handleTranslationClick("KJV")}>KJV</div>
+                      <div key="ESV1" className='item-selector-button' onClick={() => handleTranslationClick("ESV")}>ESV</div>
+                      <div key="NIV1" className='item-selector-button' onClick={() => handleTranslationClick("NIV")}>NIV</div>
+                      <div key="ASV1" className='item-selector-button' onClick={() => handleTranslationClick("ASV")}>ASV</div>
                     </IonPopover>
 
                     <IonCard className='inner-verse-card'>
                       <IonCardContent>
-                        {versesTwo ? (
-                          <>
-                            {versesTwo}
-                          </>
-                        ) : (
-                          <>
-                            Click the button above to select a translation to compare to!
-                          </>
-                        )}
+                        {versesOne}
                       </IonCardContent>
                     </IonCard>
                   </IonCardContent>
                 </IonCard>
-                {versesTwo ? (
-                  <>
-                    <br /><br /><br /><br />
-                  </>
-                ) : (
-                  <>
-                  </>
-                )}
-              </>
-            ) : (
-              <>
-              </>
-            )}
+              </IonCol>
+              {readyForCompare ? (
+                <>
+                  <IonCol size='12' sizeLg='6'>
+                    <IonCard
+                      className='verse-card'>
+                      <IonCardContent>
+
+                        <IonButton
+                          fill='clear'
+                          className='selector-translation-button'
+                          id="select-compare-translation"
+                          expand="block"
+                          onClick={() => setTranslationComparePopoverOpen(true)}
+                        >
+                          {selectedCompareTranslation ? (
+                            <>
+                              {selectedCompareTranslation}
+                            </>
+                          ) : (
+                            <>
+                              Select Translation
+                            </>
+                          )}
+                        </IonButton>
+                        <IonPopover
+                          isOpen={translationComparePopoverOpen}
+                          onDidDismiss={() => setTranslationComparePopoverOpen(false)}
+                          trigger="select-compare-translation"
+                          size="auto"
+                          className="custom-popover"
+                        >
+                          <div key="NLT2" className='item-selector-button' onClick={() => handleTranslationCompareClick("NLT")}>NLT</div>
+                          <div key="KJV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("KJV")}>KJV</div>
+                          <div key="ESV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("ESV")}>ESV</div>
+                          <div key="NIV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("NIV")}>NIV</div>
+                          <div key="ASV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("ASV")}>ASV</div>
+                        </IonPopover>
+
+                        <IonCard className='inner-verse-card'>
+                          <IonCardContent>
+                            {versesTwo ? (
+                              <>
+                                {versesTwo}
+                              </>
+                            ) : (
+                              <>
+                                Click the button above to select a translation to compare to!
+                              </>
+                            )}
+                          </IonCardContent>
+                        </IonCard>
+                      </IonCardContent>
+                    </IonCard>
+                  </IonCol>
+                  {versesTwo ? (
+                    <>
+                      <br /><br /><br /><br />
+                    </>
+                  ) : (
+                    <>
+                    </>
+                  )}
+                </>
+              ) : (
+                <>
+                </>
+              )}
+            </IonRow>
           </>
         ) : (
           <>
-            <IonCard
-              className='verse-card'>
-              <IonCardContent>
-
-                <IonButton
-                  fill='clear'
-                  className='selector-translation-button'
-                  expand="block"
-                >
-                  Bible Illumnate
-                </IonButton>
-                <IonCard className='inner-verse-card'>
+            <IonRow>
+              <IonCol size='0' sizeLg='3'></IonCol>
+              <IonCol sizeLg='6'>
+                <IonCard
+                  className='verse-card'>
                   <IonCardContent>
-                    Search for a verse to compare! Click the search bar above.
+
+                    <IonButton
+                      fill='clear'
+                      className='selector-translation-button'
+                      expand="block"
+                    >
+                      Bible Illumnate
+                    </IonButton>
+                    <IonCard className='inner-verse-card'>
+                      <IonCardContent>
+                        Search for a verse to compare! Click the search bar above.
+                      </IonCardContent>
+                    </IonCard>
                   </IonCardContent>
                 </IonCard>
-              </IonCardContent>
-            </IonCard>
+              </IonCol>
+            </IonRow>
           </>
         )}
         <div className='gemini-word gemini-footprint'>Made with Gemini</div>
@@ -755,6 +795,21 @@ const Home: React.FC = () => {
                     <>
                     </>
                   )}
+                  {geminiHistory ? (
+                    <>
+                      <IonCard className='history'>
+                        <IonCardContent>
+                          <div className='gemini-card-header'>
+                            History
+                          </div>
+                          <TextDisplay text={geminiHistory} />
+                        </IonCardContent>
+                      </IonCard>
+                    </>
+                  ) : (
+                    <>
+                    </>
+                  )}
                   {geminiCrossRef ? (
                     <>
                       <IonCard className='cross-reference'>
@@ -775,7 +830,7 @@ const Home: React.FC = () => {
                       <IonCard className='fun-fact'>
                         <IonCardContent>
                           <div className='gemini-card-header'>
-                            Fun Facts
+                            Did you know?
                           </div>
                           <TextDisplay text={geminiFunFact} />
                         </IonCardContent>

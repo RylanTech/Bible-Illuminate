@@ -11,6 +11,7 @@ const Saved: React.FC = () => {
     const [geminiMain, setGeminiMain] = useState<string | undefined>()
     const [geminiCrossRef, setGeminiCrossRef] = useState<string | undefined>()
     const [geminiFunFact, setGeminiFunFact] = useState<string | undefined>()
+    const [geminiHistory, setGmeiniHistory] = useState<string | undefined>()
     const [passage, setPassage] = useState<string | undefined>()
     
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
@@ -31,6 +32,7 @@ const Saved: React.FC = () => {
         setGeminiMain(comparedData.main)
         setGeminiCrossRef(comparedData.crossRef)
         setGeminiFunFact(comparedData.funFact)
+        setGmeiniHistory(comparedData.history)
         setPassage(comparedData.passage)
     }
 
@@ -155,6 +157,21 @@ const Saved: React.FC = () => {
                                                     Main Differences
                                                 </div>
                                                 <TextDisplay text={geminiMain} />
+                                            </IonCardContent>
+                                        </IonCard>
+                                    </>
+                                ) : (
+                                    <>
+                                    </>
+                                )}
+                                {geminiHistory ? (
+                                    <>
+                                        <IonCard className='history'>
+                                            <IonCardContent>
+                                                <div className='gemini-card-header'>
+                                                    History
+                                                </div>
+                                                <TextDisplay text={geminiHistory} />
                                             </IonCardContent>
                                         </IonCard>
                                     </>
