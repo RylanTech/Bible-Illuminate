@@ -4,6 +4,10 @@ import React, { createContext, ReactNode, useContext } from "react";
 interface GeminiContextProps {
     compareOneVerse: (translationOne: string, translationTwo: string, book: string, chapter: number, verse: number) => Promise<any>;
     compareManyVerses: (translationOne: string, translationTwo: string, book: string, chapter: number, verseOne: number, verseTwo: number) => Promise<any>;
+    
+    researchManyVerses: (translationOne: string, book: string, chapter: number, verseOne: number, verseTwo: number) => Promise<any>;
+    researchOneVerse: (translationOne: string, book: string, chapter: number, verse: number) => Promise<any>;
+
     saveComparison: (comparisonData: geminiResponse) => Promise<any>;
     getComparisons: () => Promise<any>;
     deleteSavedComparison: (updatedList: geminiResponse[]) => Promise<any>;
@@ -33,7 +37,7 @@ export const GeminiProvider: React.FC<GeminiProviderProps> = ({ children }) => {
 
     const compareOneVerse = async (translationOne: string, translationTwo: string, book: string, chapter: number, verse: number): Promise<any> => {
         try {
-            const response = await axios.get(`${baseUrl}compare-one/${translationOne}/${translationTwo}/${book}/${chapter}/${verse}`);
+            const response = await axios.get(`${baseUrl}compare-one-verse-two-translations/${translationOne}/${translationTwo}/${book}/${chapter}/${verse}`);
             return response.data;
         } catch (error) {
             return Promise.reject(error);
@@ -41,7 +45,21 @@ export const GeminiProvider: React.FC<GeminiProviderProps> = ({ children }) => {
     };
 
     const compareManyVerses = (translationOne: string, translationTwo: string, book: string, chapter: number, verseOne: number, verseTwo: number): Promise<any> => {
-        return axios.get(`${baseUrl}compare-many/${translationOne}/${translationTwo}/${book}/${chapter}/${verseOne}/${verseTwo}`)
+        return axios.get(`${baseUrl}compare-many-verse-two-translations/${translationOne}/${translationTwo}/${book}/${chapter}/${verseOne}/${verseTwo}`)
+            .then(response => response.data);
+    };
+
+    const researchOneVerse = async (translationOne: string, book: string, chapter: number, verse: number): Promise<any> => {
+        try {
+            const response = await axios.get(`${baseUrl}compare-one-verse-one-translation/${translationOne}/${book}/${chapter}/${verse}`);
+            return response.data;
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    };
+
+    const researchManyVerses = (translationOne: string, book: string, chapter: number, verseOne: number, verseTwo: number): Promise<any> => {
+        return axios.get(`${baseUrl}compare-many-verse-one-translation/${translationOne}/${book}/${chapter}/${verseOne}/${verseTwo}`)
             .then(response => response.data);
     };
 
@@ -72,6 +90,8 @@ export const GeminiProvider: React.FC<GeminiProviderProps> = ({ children }) => {
 
     return (
         <GeminiContext.Provider value={{
+            researchOneVerse,
+            researchManyVerses,
             compareOneVerse,
             compareManyVerses,
             saveComparison,

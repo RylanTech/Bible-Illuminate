@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCol, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonModal, IonPage, IonPopover, IonProgressBar, IonRow, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCol, IonContent, IonHeader, IonIcon, IonModal, IonPage, IonPopover, IonProgressBar, IonRow, IonTitle, IonToolbar } from '@ionic/react';
 import './Home.css';
 import { useContext, useRef, useState } from 'react';
 import { books } from '../books';
@@ -43,10 +43,10 @@ const Home: React.FC = () => {
   const [readyForCompare, setReadyForCompare] = useState(false)
 
   const { getOneVerse, getManyVerses } = useContext(VerseContext);
-  const { compareOneVerse, compareManyVerses, saveComparison } = useGemini();
+  const { compareOneVerse, compareManyVerses, researchOneVerse, researchManyVerses, saveComparison } = useGemini();
 
   //Research One
-  async function compareVerse() {
+  async function researchVerse() {
     setGeminiMain(undefined)
     setGeminiFunFact(undefined)
     setGeminiCrossRef(undefined)
@@ -61,7 +61,61 @@ const Home: React.FC = () => {
       return
     }
 
-    
+    if (selectedVerse === selectedEndingVerse) {
+      try {
+        await researchOneVerse(selectedTranslation.toString(), selectedBook.name, selectedChapter, selectedVerse)
+          .then((res) => {
+            setGeminiLoading(false)
+            setGeminiResponse(res)
+            if (res.main) {
+              setGeminiMain(res.main)
+            } else {
+              setGeminiMain("Something went wrong, please try again")
+            }
+            if (res.funFact) {
+              setGeminiFunFact(res.funFact)
+            }
+            if (res.crossRef) {
+              setGeminiCrossRef(res.crossRef)
+            }
+            if (res.history) {
+              setGmeiniHistory(res.history)
+            }
+          })
+      } catch {
+        setGeminiLoading(false)
+        setGeminiError(true)
+      }
+    } else {
+      try {
+        if (!selectedEndingVerse) {
+          return
+        }
+        await researchManyVerses(selectedTranslation.toString(), selectedBook.name, selectedChapter, selectedVerse, selectedEndingVerse)
+          .then((res) => {
+            setGeminiLoading(false)
+            setGeminiResponse(res)
+            if (res.main) {
+              setGeminiMain(res.main)
+            } else {
+              setGeminiMain("Something went wrong, please try again")
+            }
+            if (res.funFact) {
+              setGeminiFunFact(res.funFact)
+            }
+            if (res.crossRef) {
+              setGeminiCrossRef(res.crossRef)
+            }
+            if (res.history) {
+              setGmeiniHistory(res.history)
+            }
+          })
+      } catch {
+        setGeminiLoading(false)
+        setGeminiError(true)
+      }
+    }
+
   }
 
   //Research Many
@@ -71,6 +125,7 @@ const Home: React.FC = () => {
     setGeminiCrossRef(undefined)
     setComparisonSaved(false)
     setGeminiError(false)
+    setGeminiLoading(true)
     if (!selectedCompareTranslation) {
       return
     }
@@ -378,18 +433,35 @@ const Home: React.FC = () => {
     return result;
   }
 
-  const handleTranslationClick = (translation: string) => {
-    setSelectedTranslation(translation);
+  const handleTranslationClick = (translation: string | undefined) => {
     setTranslationPopoverOpen(false);
 
-    translationRefresh(1, translation, "NLT")
+    if (!translation) {
+      setSelectedBook(undefined)
+      setSelectedVerse(undefined)
+      setSelectedEndingVerse(undefined)
+      setReadyForCompare(false)
+      setSelectedChapter(undefined)
+      setSelectedCompareTranslation(undefined)
+      setSelectedBookName(undefined)
+      setVersesOne(undefined)
+    } else {
+      translationRefresh(1, translation, "NLT")
+      setSelectedTranslation(translation);
+      handleTranslationCompareClick(undefined)
+    }
   };
 
-  const handleTranslationCompareClick = (translation: string) => {
+  const handleTranslationCompareClick = (translation: string | undefined) => {
     setSelectedCompareTranslation(translation);
     setTranslationComparePopoverOpen(false);
 
-    translationRefresh(2, selectedTranslation.toString(), translation)
+    if (!translation) {
+      console.log("test")
+      setVersesTwo(undefined)
+    } else {
+      translationRefresh(2, selectedTranslation.toString(), translation)
+    }
   };
 
   const handleBookClick = (book: string) => {
@@ -606,6 +678,7 @@ const Home: React.FC = () => {
                       size="auto"
                       className="custom-popover"
                     >
+                      <div key="clear1" className='item-selector-button' onClick={() => handleTranslationClick(undefined)}>Reset</div>
                       <div key="NLT1" className='item-selector-button' onClick={() => handleTranslationClick("NLT")}>NLT</div>
                       <div key="KJV1" className='item-selector-button' onClick={() => handleTranslationClick("KJV")}>KJV</div>
                       <div key="ESV1" className='item-selector-button' onClick={() => handleTranslationClick("ESV")}>ESV</div>
@@ -641,7 +714,7 @@ const Home: React.FC = () => {
                             </>
                           ) : (
                             <>
-                              Select Translation
+                              Compare Translation
                             </>
                           )}
                         </IonButton>
@@ -652,6 +725,13 @@ const Home: React.FC = () => {
                           size="auto"
                           className="custom-popover"
                         >
+                          {versesTwo ? (
+                            <>
+                            <div key="clear2" className='item-selector-button' onClick={() => handleTranslationCompareClick(undefined)}>Clear</div>
+                            </>
+                          ) : (
+                            <></>
+                          )}
                           <div key="NLT2" className='item-selector-button' onClick={() => handleTranslationCompareClick("NLT")}>NLT</div>
                           <div key="KJV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("KJV")}>KJV</div>
                           <div key="ESV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("ESV")}>ESV</div>
@@ -675,20 +755,13 @@ const Home: React.FC = () => {
                       </IonCardContent>
                     </IonCard>
                   </IonCol>
-                  {versesTwo ? (
-                    <>
-                      <br /><br /><br /><br />
-                    </>
-                  ) : (
-                    <>
-                    </>
-                  )}
                 </>
               ) : (
                 <>
                 </>
               )}
             </IonRow>
+            <br /><br /><br /><br />
           </>
         ) : (
           <>
@@ -708,12 +781,13 @@ const Home: React.FC = () => {
                     </IonButton>
                     <IonCard className='inner-verse-card'>
                       <IonCardContent>
-                        Search for a verse to compare! Click the search bar above.
+                        Search for a verse to research or compare! Click the search bar above.
                       </IonCardContent>
                     </IonCard>
                   </IonCardContent>
                 </IonCard>
               </IonCol>
+              <IonCol size='0' sizeLg='3'></IonCol>
             </IonRow>
           </>
         )}
@@ -744,8 +818,36 @@ const Home: React.FC = () => {
 
         ) : (
           <>
+            {selectedVerse ? (
+              <>
+                <IonRow>
+                  <IonCol size='6'>
+                  </IonCol>
+                  <IonCol size='6'>
+                    <IonCard className='verse-card footer'>
+                      <IonCardContent>
+                        <IonButton
+                          fill='clear'
+                          className='compare-button'
+                          expand="block"
+                          onClick={() => {
+                            researchVerse();
+                            setIsModalTwoOpen(true);
+                          }}>
+                          Overview
+                        </IonButton>
+                      </IonCardContent>
+                    </IonCard>
+                  </IonCol>
+                </IonRow>
+              </>
+            ) : (
+              <>
+              </>
+            )}
           </>
         )}
+        {/* Compare Modal */}
         <IonModal isOpen={isModalTwoOpen}>
           <IonHeader>
             <IonToolbar>
@@ -785,7 +887,7 @@ const Home: React.FC = () => {
                       <IonCard className='main-res'>
                         <IonCardContent>
                           <div className='gemini-card-header'>
-                            Main Differences
+                            Overview
                           </div>
                           <TextDisplay text={geminiMain} />
                         </IonCardContent>
