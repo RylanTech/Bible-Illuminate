@@ -703,7 +703,7 @@ const Home: React.FC = () => {
 
                         <IonButton
                           fill='clear'
-                          className='selector-translation-button'
+                          className='selector-translation-button-two'
                           id="select-compare-translation"
                           expand="block"
                           onClick={() => setTranslationComparePopoverOpen(true)}
@@ -727,7 +727,7 @@ const Home: React.FC = () => {
                         >
                           {versesTwo ? (
                             <>
-                            <div key="clear2" className='item-selector-button' onClick={() => handleTranslationCompareClick(undefined)}>Clear</div>
+                              <div key="clear2" className='item-selector-button' onClick={() => handleTranslationCompareClick(undefined)}>Clear</div>
                             </>
                           ) : (
                             <></>
@@ -739,19 +739,25 @@ const Home: React.FC = () => {
                           <div key="ASV2" className='item-selector-button' onClick={() => handleTranslationCompareClick("ASV")}>ASV</div>
                         </IonPopover>
 
-                        <IonCard className='inner-verse-card'>
-                          <IonCardContent>
-                            {versesTwo ? (
-                              <>
-                                {versesTwo}
-                              </>
-                            ) : (
-                              <>
-                                Click the button above to select a translation to compare to!
-                              </>
-                            )}
-                          </IonCardContent>
-                        </IonCard>
+                        {versesTwo ? (
+                          <>
+                            <IonCard className='inner-verse-card-two'>
+                              <IonCardContent>
+                                {versesTwo ? (
+                                  <>
+                                    {versesTwo}
+                                  </>
+                                ) : (
+                                  <>
+                                  </>
+                                )}
+                              </IonCardContent>
+                            </IonCard>
+                          </>
+                        ) : (
+                          <>
+                          </>
+                        )}
                       </IonCardContent>
                     </IonCard>
                   </IonCol>
