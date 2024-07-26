@@ -139,6 +139,7 @@ const Saved: React.FC = () => {
                         </IonHeader>
                         <IonContent className="ion-padding">
                             <IonRow>
+                                <IonCol size="12">
                                 {passage ? (
                                     <>
                                         <div className="passage-title">
@@ -149,6 +150,7 @@ const Saved: React.FC = () => {
                                     <>
                                     </>
                                 )}
+                                </IonCol>
                                 {geminiMain ? (
                                     <>
                                         <IonCard className='main-res'>

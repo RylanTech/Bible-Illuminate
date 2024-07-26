@@ -655,7 +655,6 @@ const Home: React.FC = () => {
         {/* Verse Card 1 */}
         {versesOne ? (
           <>
-            <br />
             <IonRow>
               <IonCol size='12' sizeLg='6'>
                 <IonCard

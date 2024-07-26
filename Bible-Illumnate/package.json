@@ -48,5 +48,5 @@
     "vite": "5.2.13",
     "vitest": "^0.34.6"
   },
-  "description": "An Ionic project"
+  "description": "Research and compare bible verses and translations"
 }

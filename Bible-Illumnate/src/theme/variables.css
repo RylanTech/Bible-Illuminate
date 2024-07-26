@@ -6,29 +6,29 @@ http://ionicframework.com/docs/theming/ */
 
   
     /* gradients */
-    --gradient-blue-very-dark: #b5bed5;
-    --gradient-blue-dark: #8194c0;
-    --gradient-blue: #6583c7;
-    --gradient-blue-light: #647baf;
-    --gradient-blue-lighter: #4c6dc1;
+    --gradient-blue-very-dark: #858ea3;
+    --gradient-blue-dark: #818ca2;
+    --gradient-blue: #8093be;
+    --gradient-blue-light: #6a7ead;
+    --gradient-blue-lighter: #849fe6;
 
-    --gradient-yellow-very-dark: #e4e0b7;
-    --gradient-yellow-dark: #dcd6a0;
-    --gradient-yellow: #dedc84;
-    --gradient-yellow-light: #e0e066;
-    --gradient-yellow-lighter: #e3d551;
+    --gradient-yellow-very-dark: #b0ae9c;
+    --gradient-yellow-dark: #bcb88d;
+    --gradient-yellow: #abaa71;
+    --gradient-yellow-light: #9c9c5d;
+    --gradient-yellow-lighter: #cfc45c;
 
-    --gradient-red-very-dark: #e0b3b3;
-    --gradient-red-dark: #c68b8b;
-    --gradient-red: #c17070;
-    --gradient-red-light: #c95555;
+    --gradient-red-very-dark: #9b8585;
+    --gradient-red-dark: #956969;
+    --gradient-red: #986363;
+    --gradient-red-light: #9a5656;
     --gradient-red-lighter: #e35454;
 
-    --gradient-green-very-dark: #b3d5bc;
-    --gradient-green-dark: #a1d69e;
-    --gradient-green: #7ed47e;
-    --gradient-green-light: #5cd378;
-    --gradient-green-lighter: #40f840;
+    --gradient-green-very-dark: #859e8c;
+    --gradient-green-dark: #769d74;
+    --gradient-green: #5f935f;
+    --gradient-green-light: #4b945c;
+    --gradient-green-lighter: #47b347;
 
     --gemini-card-text-color: #ffffff;
 }
