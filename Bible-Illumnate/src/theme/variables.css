@@ -4,6 +4,8 @@ http://ionicframework.com/docs/theming/ */
   --verse-card-color: #4660bc;
   --highlight-color: #566dc1;
 
+  --highlight-compare-color: #566dc1;
+
   
     /* gradients */
     --gradient-blue-very-dark: #858ea3;
@@ -37,6 +39,7 @@ http://ionicframework.com/docs/theming/ */
   :root {
     --verse-card-color: #141c36;
     --highlight-color: #263054;
+    --highlight-compare-color: #263054;
 
     /* gradients */
     --gradient-blue-very-dark: #131825;
