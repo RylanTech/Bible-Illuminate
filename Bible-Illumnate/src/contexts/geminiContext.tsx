@@ -33,7 +33,7 @@ export interface geminiResponse {
 
 
 export const GeminiProvider: React.FC<GeminiProviderProps> = ({ children }) => {
-    const baseUrl = 'http://localhost:3001/api/gemini/';
+    const baseUrl = 'http://bibleilluminate.com /api/gemini/';
 
     const compareOneVerse = async (translationOne: string, translationTwo: string, book: string, chapter: number, verse: number): Promise<any> => {
         try {

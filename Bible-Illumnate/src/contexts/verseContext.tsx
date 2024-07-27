@@ -43,7 +43,7 @@ export const VerseContext = createContext<verseCallingContextProps>({
     getManyVerses: (data: callingManyVerseBody) => Promise.resolve([] as verseResponse[]) // Default to empty array
 });
 
-const BASE_URL = 'http://localhost:3001/api/';
+const BASE_URL = 'http://bibleilluminate.com /api/';
 
 export const VerseProvider = ({ children }: VerseContextProviderProps) => {
 
