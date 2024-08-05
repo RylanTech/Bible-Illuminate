@@ -125,7 +125,7 @@ const Saved: React.FC = () => {
                         </>
                     ) : (
                         <IonItem>
-                            Save a comparison and they will appear here
+                            Save an overview or comparison and they will appear here
                         </IonItem>
                     )}
                     <IonModal isOpen={isModalOpen}>

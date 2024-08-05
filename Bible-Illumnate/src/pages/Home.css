@@ -1,7 +1,3 @@
-* {
-    font-size: 22px;
-}
-
 .selector-bar {
     margin: 15px;
 }
@@ -132,9 +128,10 @@
 
 .main-res {
     background: linear-gradient(to right, var(--gradient-blue-very-dark), var(--gradient-blue-dark), var(--gradient-blue-dark), var(--gradient-blue-dark), var(--gradient-blue-dark), var(--gradient-blue), var(--gradient-blue-light), var(--gradient-blue-lighter))!important;
-    border-radius: 15px;
+    border-radius: 20px;
     border: 1px solid #4285f4; 
     color: var(--gemini-card-text-color);
+    width: 100%;
 }
 .cross-reference {
     background: linear-gradient(to right, var(--gradient-red-very-dark), var(--gradient-red-dark), var(--gradient-red-dark), var(--gradient-red-dark), var(--gradient-red-dark), var(--gradient-red), var(--gradient-red-light), var(--gradient-red-lighter))!important;
